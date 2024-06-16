@@ -70,9 +70,13 @@ jobs:
         password: ${{secrets.DOCKERHUB_TOKEN}}
 
     - name: Docker Build & Push
-      run: |
-        docker build --platform linux/amd64 --tag ${{secrets.DOCKERHUB_TAG}} .
-        docker push ${{secrets.DOCKERHUB_TAG}}
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: ${secrets.DOCKERHUB_TAG}
 
   dependency-submission:
 
