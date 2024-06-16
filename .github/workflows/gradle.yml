@@ -76,7 +76,8 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64
         push: true
-        tags: $${secrets.DOCKERHUB_TAG}}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
 
   dependency-submission:
 
