@@ -71,8 +71,8 @@ jobs:
 
     - name: Docker Build & Push
       run: |
-        docker build --platform linux/amd64 --tag $${{secrets.DOCKERHUB_TAG}} .
-        docker push $${{secrets.DOCKERHUB_TAG}}
+        docker build --platform linux/amd64 --tag ${{secrets.DOCKERHUB_TAG}} .
+        docker push ${{secrets.DOCKERHUB_TAG}}
 
   dependency-submission:
 
