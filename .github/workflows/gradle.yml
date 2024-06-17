@@ -106,9 +106,9 @@ jobs:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{AWS_HOST}}
+          host: ${{secrets.AWS_HOST}}
           port: 22
-          key: ${{AWS_SSH_KEY}}
+          key: ${{secrets.AWS_SSH_KEY}}
           username: ubuntu
         script: |
           docker pull ${{secrets.DOCKERHUB_TAG}}
