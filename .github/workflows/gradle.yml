@@ -43,9 +43,19 @@ jobs:
         mysql database: 'bucket_list'
         mysql root password: ${{secrets.MYSQL_ROOT_PASSWORD}}
 
+    - name: Wait for MySQL
+      run: |
+        for i in `seq 1 30`; do
+          if echo 'SELECT 1' | mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} bucket_list &> /dev/null; then
+            break
+          fi
+          echo 'Waiting for MySQL...'
+          sleep 1
+        done
+
     - name: Init MySQL Tables
       run: |
-        docker exec -i MYSQL_DATABASE -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
+        mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
