@@ -31,14 +31,21 @@ jobs:
         echo "${{secrets.APPLICATION_PROPERTEIS}}" >> ./application.properties
       shell: bash
 
-    - name: Start Ubuntu MySQL
-      run: sudo service mysql start
+    - name: Shutdown Ubuntu MySQL
+      run: sudo service mysql stop
+
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        host port: 3306
+        container port: 3306
+        mysql version: '8.0.33'
+        mysql database: 'bucket_list'
+        mysql root password: ${{secrets.MYSQL_ROOT_PASSWORD}}
 
     - name: Init MySQL Tables
       run: |
-        sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}}
-        CREATE DATABASE bucket_list
-        bucket_list < ./init-tables/init-table.sql
+        docker exec -i mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
