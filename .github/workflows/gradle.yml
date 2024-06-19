@@ -12,15 +12,6 @@ jobs:
     permissions:
       contents: read
 
-    services:
-      mysql:
-        image: mysql:8.0.33
-        ports:
-          - "3306:3306"
-        env:
-          MYSQL_DATABASE: bucket_list
-          MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
-
     steps:
     - uses: actions/checkout@v4
 
@@ -39,6 +30,16 @@ jobs:
         touch ./application.properties
         echo "${{secrets.APPLICATION_PROPERTEIS}}" >> ./application.properties
       shell: bash
+
+    - name: Shutdown Ubuntu MySQL
+      run: sudo service mysql stop
+
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql version: '8.0.33'
+        mysql database: 'bucket_list'
+        mysql root password: ${{secrets.MYSQL_ROOT_PASSWORD}}
 
     - name: Init MySQL Tables
       run: |
