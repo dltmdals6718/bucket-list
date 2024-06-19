@@ -20,8 +20,12 @@ jobs:
         env:
           MYSQL_DATABASE: bucket_list
           MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
-        volumes:
-          - ./init-tables/:/docker-entrypoint-initdb.d/
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          --name mysql
 
     steps:
     - uses: actions/checkout@v4
@@ -43,7 +47,9 @@ jobs:
       shell: bash
 
     - name: MySQL Init
-      run: sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
+      run: |
+        docker exec -it mysql bash
+        sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
