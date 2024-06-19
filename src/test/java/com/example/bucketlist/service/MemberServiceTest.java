@@ -34,24 +34,23 @@ class MemberServiceTest {
     void signup() {
 
         //given
-
         MemberSignupRequest memberSignupRequest = new MemberSignupRequest();
         memberSignupRequest.setLoginId("loginId");
         memberSignupRequest.setLoginPwd("loginPwd");
 
         //when
-//        Long memberId = memberService.signup(memberSignupRequest);
+        Long memberId = memberService.signup(memberSignupRequest);
 
         //then
-//        Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new NoSuchElementException());
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException());
 
-//        Assertions
-//                .assertThat(member.getLoginId())
-//                .isEqualTo(memberSignupRequest.getLoginId());
-//        Assertions
-//                .assertThat(passwordEncoder.matches(memberSignupRequest.getLoginPwd(), member.getLoginPwd()))
-//                .isTrue();
+        Assertions
+                .assertThat(member.getLoginId())
+                .isEqualTo(memberSignupRequest.getLoginId());
+        Assertions
+                .assertThat(passwordEncoder.matches(memberSignupRequest.getLoginPwd(), member.getLoginPwd()))
+                .isTrue();
 
     }
 }
