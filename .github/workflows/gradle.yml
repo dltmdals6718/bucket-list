@@ -20,6 +20,11 @@ jobs:
         env:
           MYSQL_DATABASE: bucket_list
           MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
         volumes:
           - ./init-tables/:/docker-entrypoint-initdb.d/
 
@@ -41,6 +46,14 @@ jobs:
         touch ./application.properties
         echo "${{secrets.APPLICATION_PROPERTEIS}}" >> ./application.properties
       shell: bash
+
+    - name: Wait for MySQL to be ready
+      run: |
+        until docker exec my-mysql mysqladmin ping -h "127.0.0.1" -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} --silent; do
+          echo 'Waiting for MySQL to be ready...'
+          sleep 5
+        done
+
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
