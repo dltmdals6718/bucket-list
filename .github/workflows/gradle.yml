@@ -20,6 +20,8 @@ jobs:
         env:
           MYSQL_DATABASE: bucket_list
           MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+        volumes:
+          - ./init-tables/:/docker-entrypoint-initdb.d
 
     steps:
     - uses: actions/checkout@v4
