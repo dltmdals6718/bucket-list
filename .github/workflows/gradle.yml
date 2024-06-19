@@ -43,7 +43,7 @@ jobs:
 
     - name: Init MySQL Tables
       run: |
-        mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
+        sudo mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
