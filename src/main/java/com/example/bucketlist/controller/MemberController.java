@@ -28,7 +28,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public String signup(MemberSignupRequest memberSignupRequest) {
-        System.out.println("memberSignupRequest = " + memberSignupRequest);
+        memberService.signup(memberSignupRequest);
         return "redirect:/";
     }
 

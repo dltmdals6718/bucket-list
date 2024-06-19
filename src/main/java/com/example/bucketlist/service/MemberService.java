@@ -1,17 +1,33 @@
 package com.example.bucketlist.service;
 
+import com.example.bucketlist.domain.Member;
+import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public Long signup(MemberSignupRequest memberSignupRequest) {
+
+        Member member = new Member();
+        member.setLoginId(memberSignupRequest.getLoginId());
+        member.setLoginPwd(passwordEncoder.encode(memberSignupRequest.getLoginPwd()));
+
+        Long memberId = memberRepository.save(member).getId();
+
+        return memberId;
     }
 
 }
