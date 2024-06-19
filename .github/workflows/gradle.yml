@@ -20,8 +20,6 @@ jobs:
         env:
           MYSQL_DATABASE: bucket_list
           MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
-        volumes:
-          - ./init-tables/:/docker-entrypoint-initdb.d
 
     steps:
     - uses: actions/checkout@v4
@@ -41,6 +39,10 @@ jobs:
         touch ./application.properties
         echo "${{secrets.APPLICATION_PROPERTEIS}}" >> ./application.properties
       shell: bash
+
+    - name: Init MySQL Tables
+      run: |
+        mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
