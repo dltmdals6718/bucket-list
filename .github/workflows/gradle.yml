@@ -48,6 +48,7 @@ jobs:
 
     - name: MySQL Init
       run: |
+        sudo /etc/init.d/mysql start
         sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
