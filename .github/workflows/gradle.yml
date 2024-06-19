@@ -48,8 +48,10 @@ jobs:
 
     - name: MySQL Init
       run: |
-        sudo /etc/init.d/mysql start
-        sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
+        docker cp ./init-tables/init-table.sql mysql:/
+        sudo docker exec -i mysql bash
+        sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}}
+        create database bucket_list
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
