@@ -12,6 +12,17 @@ jobs:
     permissions:
       contents: read
 
+    services:
+      mysql:
+        image: mysql:8.0.33
+        ports:
+          - "3306:3306"
+        env:
+          MYSQL_DATABASE: bucket_list
+          MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+        volumes:
+          - ./init-tables/:/docker-entrypoint-initdb.d
+
     steps:
     - uses: actions/checkout@v4
 
@@ -30,32 +41,6 @@ jobs:
         touch ./application.properties
         echo "${{secrets.APPLICATION_PROPERTEIS}}" >> ./application.properties
       shell: bash
-
-    - name: Shutdown Ubuntu MySQL
-      run: sudo service mysql stop
-
-    - name: Set up MySQL
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        host port: 3306
-        container port: 3306
-        mysql version: '8.0.33'
-        mysql database: 'bucket_list'
-        mysql root password: ${{secrets.MYSQL_ROOT_PASSWORD}}
-
-    - name: Wait for MySQL
-      run: |
-        for i in `seq 1 30`; do
-          if echo 'SELECT 1' | mysql -h 127.0.0.1 -P 3306 -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} bucket_list &> /dev/null; then
-            break
-          fi
-          echo 'Waiting for MySQL...'
-          sleep 1
-        done
-
-    - name: Init MySQL Tables
-      run: |
-        mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
