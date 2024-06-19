@@ -45,7 +45,7 @@ jobs:
 
     - name: Init MySQL Tables
       run: |
-        docker exec -i mysql -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
+        docker exec -i MYSQL_DATABASE -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
