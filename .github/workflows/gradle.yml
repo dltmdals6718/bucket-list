@@ -16,7 +16,7 @@ jobs:
       mysql:
         image: mysql:8.0.33
         ports:
-          - "3306:3306"
+          - 3306:3306
         env:
           MYSQL_DATABASE: bucket_list
           MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
@@ -42,13 +42,8 @@ jobs:
         echo "${{secrets.APPLICATION_PROPERTEIS}}" >> ./application.properties
       shell: bash
 
-    - name: Wait for MySQL to be ready
-      run: |
-        until docker exec my-mysql mysqladmin ping -h "127.0.0.1" -u root -p${{secrets.MYSQL_ROOT_PASSWORD}} --silent; do
-          echo 'Waiting for MySQL to be ready...'
-          sleep 5
-        done
-
+    - name: MySQL Init
+      run: sudo mysql -uroot -p${{secrets.MYSQL_ROOT_PASSWORD}} bucket_list < ./init-tables/init-table.sql
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
