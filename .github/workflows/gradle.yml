@@ -104,4 +104,4 @@ jobs:
             docker stop bucket_list_server
             docker rm bucket_list_server
             docker rmi ${{secrets.DOCKERHUB_TAG}}
-            docker run -d --name bucket_list_server -p 8080:8080 ${{secrets.DOCKERHUB_TAG}}
+            docker run -d --name bucket_list_server -p 8080:8080 -e SPRING_DATASOURCE_URL=${{SPRING_DATASOURCE_URL}} ${{secrets.DOCKERHUB_TAG}}
