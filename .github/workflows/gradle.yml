@@ -103,7 +103,7 @@ jobs:
             docker pull ${{secrets.DOCKERHUB_TAG}}
             docker stop bucket_list_server
             docker rm bucket_list_server
-            sudo docker image prune -f
+            docker image prune -f
             docker run -d \
               --name bucket_list_server \
               -p 8080:8080 \
