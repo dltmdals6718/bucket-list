@@ -1,6 +1,7 @@
 package com.example.bucketlist.service;
 
 import com.example.bucketlist.domain.Member;
+import com.example.bucketlist.dto.request.MemberSigninRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +31,15 @@ public class MemberService {
         return memberId;
     }
 
+    public Member signin(MemberSigninRequest memberSigninRequest) {
+
+        String loginId = memberSigninRequest.getLoginId();
+        String loginPwd = memberSigninRequest.getLoginPwd();
+        Member member = memberRepository.findMemberByLoginId(loginId);
+
+        if(member == null || passwordEncoder.matches(loginPwd, member.getLoginPwd()))
+            return null;
+
+        return member;
+    }
 }
