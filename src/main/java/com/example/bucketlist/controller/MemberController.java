@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/members")
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     @Autowired
     public MemberController(MemberService memberService) {
@@ -31,7 +31,11 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public String signup(MemberSignupRequest memberSignupRequest) {
+    public String signup(@Validated MemberSignupRequest memberSignupRequest, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors())
+            return "signup";
+
         memberService.signup(memberSignupRequest);
         return "redirect:/";
     }
@@ -51,7 +55,7 @@ public class MemberController {
         Member member = memberService.signin(memberSigninRequest);
 
         if(member == null)
-            bindingResult.reject("로그인실패", "아이디 또는 비밀번호가 틀렸습니다.");
+            bindingResult.reject("loginFail", "로그인 실패");
 
         if(bindingResult.hasErrors())
             return "signin";

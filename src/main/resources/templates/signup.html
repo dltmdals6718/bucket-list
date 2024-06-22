@@ -11,14 +11,17 @@
     <div>
         <label th:for="loginId">아이디</label>
         <input type="text" th:field="*{loginId}">
+        <div th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">loginId Error</div>
     </div>
     <div>
         <label th:for="loginPwd">비밀번호</label>
         <input type="password" th:field="*{loginPwd}">
+        <div th:if="${#fields.hasErrors('loginPwd')}" th:errors="*{loginPwd}">loginPwd Error</div>
     </div>
     <div>
         <label th:for="confirmPwd">비밀번호 확인</label>
         <input type="password" th:field="*{confirmPwd}">
+        <div th:if="${#fields.hasErrors('confirmPwd')}" th:errors="*{confirmPwd}">confirmPwd Error</div>
     </div>
     <div>
         <button type="submit">회원가입</button>
