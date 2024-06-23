@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<h1>signup</h1>
+<div th:replace="~{fragments/header :: headerFragment}"></div>
 <form th:action="@{/members/signup}" method="post" th:object="${memberSignupRequest}">
 
     <div>
@@ -28,6 +28,5 @@
     </div>
 </form>
 
-<a href="/">Home</a>
 </body>
 </html>

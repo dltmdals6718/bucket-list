@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+<div th:replace="~{fragments/header :: headerFragment}"></div>
 <form th:action="@{/members/signin}" method="post" th:object="${memberSigninRequest}">
     <div>
         <label th:for="loginId">아이디</label>

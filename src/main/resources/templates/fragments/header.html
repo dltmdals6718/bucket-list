@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<header th:fragment="headerFragment">
+    <a href="/">Home</a>
+    <div th:if="${session.member != null}">
+        <p th:text="|${session.member.getMemberId()}번째 님|"></p>
+        <form th:action="@{/members/logout}" method="post">
+            <button type="submit">로그아웃</button>
+        </form>
+    </div>
+    <div th:if="${session.member == null}">
+        <a href="/members/signin">로그인</a>
+        <a href="/members/signup">회원가입</a>
+    </div>
+</header>
+</body>
+</html>
