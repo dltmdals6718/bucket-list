@@ -44,7 +44,9 @@ public class MemberController {
         if(!memberSignupRequest.getLoginPwd().equals(memberSignupRequest.getConfirmPwd()))
             bindingResult.rejectValue("confirmPwd", "confirmPwdFail", "비밀번호 미일치");
 
-        // 비밀번호 재확인 미일치 에러 검출
+        if(false)
+            bindingResult.rejectValue("emailCode","emailCodeFail", "이메일 인증 번호 미일치");
+
         if(bindingResult.hasErrors())
             return "signup";
 

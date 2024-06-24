@@ -2,7 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Title</title>
+    <script src="/js/emailVerification.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div th:replace="~{fragments/header :: headerFragment}"></div>
@@ -22,6 +26,21 @@
         <label th:for="confirmPwd">비밀번호 확인</label>
         <input type="password" th:field="*{confirmPwd}">
         <div th:if="${#fields.hasErrors('confirmPwd')}" th:errors="*{confirmPwd}">confirmPwd Error</div>
+    </div>
+    <div>
+        <label th:for="email">이메일 주소</label>
+        <input type="email" th:field="*{email}"> <button type="button" id="emailVerificationBtn">인증 번호 전송</button>
+        <div th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')[0]}">email Error</div>
+    </div>
+    <div>
+        <label th:for="emailCode">이메일 인증 번호</label>
+        <input type="text" th:field="*{emailCode}">
+        <div th:if="${#fields.hasErrors('emailCode')}" th:text="${#fields.errors('emailCode')[0]}">emailCode Error</div>
+    </div>
+    <div>
+        <label th:for="nickname">별명</label>
+        <input type="text" th:field="*{nickname}">
+        <div th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">nickname Error</div>
     </div>
     <div>
         <button type="submit">회원가입</button>

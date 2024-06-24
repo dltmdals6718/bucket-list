@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>이메일 인증 번호</h1>
+<p>우리들의 버킷 리스트에 가입하신것을 환영합니다.<br>
+  아래의 인증 번호를 입력하시면 회원가입이 정상적으로 완료됩니다.</p>
+<div style="background-color: lightgray; padding: 10px; display: inline-block; font-size: 24px; text-align: center" th:text="|인증 코드 : ${code}|">
+    인증 번호
+</div>
+</body>
+</html>
