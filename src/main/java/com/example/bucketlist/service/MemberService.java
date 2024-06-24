@@ -37,7 +37,7 @@ public class MemberService {
         String loginPwd = memberSigninRequest.getLoginPwd();
         Member member = memberRepository.findMemberByLoginId(loginId);
 
-        if(member == null || passwordEncoder.matches(loginPwd, member.getLoginPwd()))
+        if(member == null || !passwordEncoder.matches(loginPwd, member.getLoginPwd()))
             return null;
 
         return member;
