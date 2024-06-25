@@ -19,8 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 success: function () {
                     alert(email + "로 전송 완료.")
                 },
-                error: function () {
-                    alert(email + "로 전송 실패.")
+                error: function (request, status, error) {
+                    const responeJson = JSON.parse(request.responseText);
+                    alert("ERR: " + responeJson.error + "\nMSG: " + responeJson.message);
                 }
             })
         }
