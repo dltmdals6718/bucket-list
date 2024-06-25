@@ -25,6 +25,8 @@ public class MemberService {
         Member member = new Member();
         member.setLoginId(memberSignupRequest.getLoginId());
         member.setLoginPwd(passwordEncoder.encode(memberSignupRequest.getLoginPwd()));
+        member.setEmail(memberSignupRequest.getEmail());
+        member.setNickname(memberSignupRequest.getNickname());
 
         Long memberId = memberRepository.save(member).getId();
 
