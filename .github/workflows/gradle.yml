@@ -109,4 +109,7 @@ jobs:
               -p 8080:8080 \
               -e SPRING_DATASOURCE_URL=${{secrets.SPRING_DATASOURCE_URL}} \
               -e SPRING_DATASOURCE_PASSWORD=${{secrets.MYSQL_ROOT_PASSWORD}} \
+              -e SPRING_DATA_REDIS_HOST=${{secrets.REDIS_HOST}} \
+              -e SPRING_DATA_REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}} \
+              -e SPRING_DATA_REDIS_PORT=${{secrets.REDIS_PORT}} \
               ${{secrets.DOCKERHUB_TAG}}
