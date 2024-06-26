@@ -1,5 +1,6 @@
 package com.example.bucketlist.controller;
 
+import com.example.bucketlist.service.MailService;
 import com.example.bucketlist.session.MemberSession;
 import com.example.bucketlist.session.SessionConst;
 import com.example.bucketlist.domain.Member;
@@ -22,10 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MailService mailService;
 
     @Autowired
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, MailService mailService) {
         this.memberService = memberService;
+        this.mailService = mailService;
     }
 
     @GetMapping("/signup")
@@ -44,7 +47,7 @@ public class MemberController {
         if(!memberSignupRequest.getLoginPwd().equals(memberSignupRequest.getConfirmPwd()))
             bindingResult.rejectValue("confirmPwd", "confirmPwdFail", "비밀번호 미일치");
 
-        if(false)
+        if(!mailService.checkMailVerificationCode(memberSignupRequest.getEmail(), Integer.parseInt(memberSignupRequest.getEmailCode())))
             bindingResult.rejectValue("emailCode","emailCodeFail", "이메일 인증 번호 미일치");
 
         if(bindingResult.hasErrors())

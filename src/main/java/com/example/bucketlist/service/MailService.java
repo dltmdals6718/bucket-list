@@ -61,4 +61,18 @@ public class MailService {
         redisTemplate.expire(email, 5, TimeUnit.MINUTES);
 
     }
+
+    public boolean checkMailVerificationCode(String email, int inputCode) {
+
+        Boolean isEmailExists = redisTemplate.hasKey(email);
+        if (isEmailExists) {
+            int emailCode = redisTemplate.opsForValue().get(email).intValue();
+            if (emailCode == inputCode) {
+                redisTemplate.delete(email);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
