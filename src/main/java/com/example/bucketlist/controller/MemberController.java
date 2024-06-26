@@ -50,6 +50,9 @@ public class MemberController {
         if(!mailService.checkMailVerificationCode(memberSignupRequest.getEmail(), Integer.parseInt(memberSignupRequest.getEmailCode())))
             bindingResult.rejectValue("emailCode","emailCodeFail", "이메일 인증 번호 미일치");
 
+        if (memberService.existsLoginId(memberSignupRequest.getLoginId()))
+            bindingResult.rejectValue("loginId", "signupDuplicateLoginId", "중복된 아이디");
+
         if(bindingResult.hasErrors())
             return "signup";
 

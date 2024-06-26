@@ -44,4 +44,8 @@ public class MemberService {
 
         return member;
     }
+
+    public Boolean existsLoginId(String loginId) {
+        return memberRepository.existsByLoginId(loginId);
+    }
 }
