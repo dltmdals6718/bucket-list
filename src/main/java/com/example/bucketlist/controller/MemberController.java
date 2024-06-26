@@ -1,5 +1,6 @@
 package com.example.bucketlist.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.bucketlist.service.MailService;
 import com.example.bucketlist.session.MemberSession;
 import com.example.bucketlist.session.SessionConst;
@@ -24,17 +25,19 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MailService mailService;
+    private final AmazonS3Client amazonS3Client;
 
     @Autowired
-    public MemberController(MemberService memberService, MailService mailService) {
+    public MemberController(MemberService memberService, MailService mailService, AmazonS3Client amazonS3Client) {
         this.memberService = memberService;
         this.mailService = mailService;
+        this.amazonS3Client = amazonS3Client;
     }
 
     @GetMapping("/signup")
     public String signupForm(Model model) {
         model.addAttribute("memberSignupRequest", new MemberSignupRequest());
-        return "signup";
+        return "member/signup";
     }
 
     @PostMapping("/signup")
@@ -42,7 +45,7 @@ public class MemberController {
 
         //빈 폼 입력시 에러 검출
         if(bindingResult.hasErrors())
-            return "signup";
+            return "member/signup";
 
         if(!memberSignupRequest.getLoginPwd().equals(memberSignupRequest.getConfirmPwd()))
             bindingResult.rejectValue("confirmPwd", "confirmPwdFail", "비밀번호 미일치");
@@ -54,7 +57,7 @@ public class MemberController {
             bindingResult.rejectValue("loginId", "signupDuplicateLoginId", "중복된 아이디");
 
         if(bindingResult.hasErrors())
-            return "signup";
+            return "member/signup";
 
         memberService.signup(memberSignupRequest);
         return "redirect:/";
@@ -63,7 +66,7 @@ public class MemberController {
     @GetMapping("/signin")
     public String signinForm(Model model) {
         model.addAttribute("memberSigninRequest", new MemberSigninRequest());
-        return "signin";
+        return "member/signin";
     }
 
     @PostMapping("/signin")
@@ -71,7 +74,7 @@ public class MemberController {
 
         // 빈 폼 입력시 에러 검출
         if(bindingResult.hasErrors())
-            return "signin";
+            return "member/signin";
 
         Member member = memberService.signin(memberSigninRequest);
 
@@ -80,7 +83,7 @@ public class MemberController {
 
         // 폼 정보의 회원이 존재하지 않을때 에러 검출
         if(bindingResult.hasErrors())
-            return "signin";
+            return "member/signin";
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.MEMBER_SESSION, new MemberSession(member.getId(), "임시 프로필 이미지 경로"));
