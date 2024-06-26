@@ -30,12 +30,12 @@
     <div>
         <label th:for="email">이메일 주소</label>
         <input type="email" th:field="*{email}"> <button type="button" id="emailVerificationBtn">인증 번호 전송</button>
-        <div th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')[0]}">email Error</div>
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email Error</div>
     </div>
     <div>
         <label th:for="emailCode">이메일 인증 번호</label>
         <input type="text" th:field="*{emailCode}">
-        <div th:if="${#fields.hasErrors('emailCode')}" th:text="${#fields.errors('emailCode')[0]}">emailCode Error</div>
+        <div th:if="${#fields.hasErrors('emailCode')}" th:errors="*{emailCode}">emailCode Error</div>
     </div>
     <div>
         <label th:for="nickname">별명</label>
