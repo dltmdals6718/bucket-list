@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -16,7 +17,18 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(request -> request
+                .requestMatchers("/members/profile").authenticated()
                 .anyRequest().permitAll());
+
+        http.formLogin((form) -> form
+                .loginPage("/members/signin")
+                .loginProcessingUrl("/members/signin")
+                .defaultSuccessUrl("/", false)
+                .failureHandler(authenticationFailureHandler())
+                .usernameParameter("loginId")
+                .passwordParameter("loginPwd")
+                .permitAll()
+        );
 
         return http.build();
     }
@@ -26,6 +38,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
 
 
 }

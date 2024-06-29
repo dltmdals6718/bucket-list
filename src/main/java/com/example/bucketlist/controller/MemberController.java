@@ -1,16 +1,15 @@
 package com.example.bucketlist.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.service.MailService;
-import com.example.bucketlist.session.MemberSession;
-import com.example.bucketlist.session.SessionConst;
-import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.dto.request.MemberSigninRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -69,27 +68,15 @@ public class MemberController {
         return "member/signin";
     }
 
-    @PostMapping("/signin")
-    public String signin(@Validated MemberSigninRequest memberSigninRequest, BindingResult bindingResult, HttpServletRequest request) {
-
-        // 빈 폼 입력시 에러 검출
-        if(bindingResult.hasErrors())
-            return "member/signin";
-
-        Member member = memberService.signin(memberSigninRequest);
-
-        if(member == null)
-            bindingResult.reject("loginFail", "로그인 실패");
-
-        // 폼 정보의 회원이 존재하지 않을때 에러 검출
-        if(bindingResult.hasErrors())
-            return "member/signin";
-
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.MEMBER_SESSION, new MemberSession(member.getId(), "임시 프로필 이미지 경로"));
-        session.setMaxInactiveInterval(60 * 60 * 3);
-
-        return "redirect:/";
+    @PostMapping("/signin-error")
+    public String signinError(Model model, HttpServletRequest request) {
+        String loginId = request.getParameter("loginId");
+        String errorMsg = (String) request.getAttribute("errorMsg");
+        MemberSigninRequest memberSigninRequest = new MemberSigninRequest();
+        memberSigninRequest.setLoginId(loginId);
+        model.addAttribute("memberSigninRequest", memberSigninRequest);
+        model.addAttribute("errorMsg", errorMsg);
+        return "member/signin";
     }
 
     @PostMapping("/logout")
@@ -100,5 +87,10 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @GetMapping("/profile")
+    public String profile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.println("customUserDetails = " + customUserDetails);
+        return "member/profile";
+    }
 
 }

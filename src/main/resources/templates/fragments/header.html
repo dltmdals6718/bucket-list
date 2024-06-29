@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,13 +9,14 @@
 <body>
 <header th:fragment="headerFragment">
     <a href="/">Home</a>
-    <div th:if="${session.member != null}">
-        <p th:text="|${session.member.getMemberId()}번째 님|"></p>
+    <div sec:authorize="isAuthenticated()">
+        <p th:text="|${#authentication.getPrincipal().getNickname()} 님|"></p>
         <form th:action="@{/members/logout}" method="post">
             <button type="submit">로그아웃</button>
         </form>
+        <a href="/members/profile">회원 정보</a>
     </div>
-    <div th:if="${session.member == null}">
+    <div sec:authorize="isAnonymous()">
         <a href="/members/signin">로그인</a>
         <a href="/members/signup">회원가입</a>
     </div>
