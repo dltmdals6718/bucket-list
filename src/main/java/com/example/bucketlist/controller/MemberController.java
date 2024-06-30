@@ -7,7 +7,6 @@ import com.example.bucketlist.dto.request.MemberSigninRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -77,14 +76,6 @@ public class MemberController {
         model.addAttribute("memberSigninRequest", memberSigninRequest);
         model.addAttribute("errorMsg", errorMsg);
         return "member/signin";
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if(session != null)
-            session.invalidate();
-        return "redirect:/";
     }
 
     @GetMapping("/profile")
