@@ -24,6 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = memberRepository.findMemberByLoginId(username);
         if(member == null)
             throw new UsernameNotFoundException("no user");
-        return new CustomUserDetails(member.getLoginId(), member.getLoginPwd(), member.getNickname());
+        return new CustomUserDetails(member.getId(), member.getLoginId(), member.getLoginPwd(), member.getNickname(), member.getEmail());
     }
 }

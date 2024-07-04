@@ -9,15 +9,19 @@ import java.util.Collection;
 @ToString
 public class CustomUserDetails implements UserDetails {
 
+    private Long id;
     private String loginId;
     private String loginPwd;
     private String nickname;
+    private String email;
 
 
-    public CustomUserDetails(String loginId, String loginPwd, String nickname) {
+    public CustomUserDetails(Long id, String loginId, String loginPwd, String nickname, String email) {
+        this.id = id;
         this.loginId = loginId;
         this.loginPwd = loginPwd;
         this.nickname = nickname;
+        this.email = email;
     }
 
     @Override
@@ -57,5 +61,17 @@ public class CustomUserDetails implements UserDetails {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getLoginId() {
+        return loginId;
     }
 }
