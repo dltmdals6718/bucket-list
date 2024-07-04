@@ -1,9 +1,6 @@
 package com.example.bucketlist.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -18,4 +15,7 @@ public class Member {
     private String loginPwd;
     private String nickname;
     private String email;
+
+    @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
+    private ProfileImage profileImage;
 }

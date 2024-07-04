@@ -2,10 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/profileUpdate.js"></script>
 </head>
 <body>
 <div th:replace="~{fragments/header ::headerFragment}"></div>
-<h1>프로파일</h1>
+<div>
+    <img th:src="${tempProfilePath}">
+    <input type="file" id="profileImg" accept=".png, .jpg, .jpeg">
+</div>
+<div>
+    <labeL for="loginId">아이디</labeL>
+    <input id="loginId" th:value="${member.loginId}" readonly disabled>
+</div>
+<div>
+    <labeL for="nickname">별명</labeL>
+    <input id="nickname" name="nickname" th:value="${member.nickname}">
+</div>
+<div>
+    <labeL for="email">이메일</labeL>
+    <input id="email" th:value="${member.email}" readonly disabled>
+</div>
+<button id="profileUpdateBtn">저장</button>
 </body>
 </html>

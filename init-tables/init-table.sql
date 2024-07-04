@@ -9,3 +9,11 @@ CREATE TABLE IF NOT EXISTS member (
     email VARCHAR(255)
 );
 
+CREATE TABLE IF NOT EXISTS profile_image (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    member_id BIGINT,
+    upload_file_name VARCHAR(255),
+    store_file_name VARCHAR(255),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);
+
