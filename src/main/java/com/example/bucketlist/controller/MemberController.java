@@ -91,7 +91,8 @@ public class MemberController {
         model.addAttribute("member", member);
 
         // todo: 회원 Model
-        model.addAttribute("tempProfilePath", memberService.profileImgPath(member.getProfileImage()));
+        if (member.getProfileImage() != null)
+            model.addAttribute("tempProfilePath", memberService.profileImgPath(member.getProfileImage()));
         return "member/profile";
     }
 

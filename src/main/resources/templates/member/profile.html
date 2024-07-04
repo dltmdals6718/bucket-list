@@ -11,7 +11,7 @@
 <body>
 <div th:replace="~{fragments/header ::headerFragment}"></div>
 <div>
-    <img th:src="${tempProfilePath}">
+    <img th:if="${tempProfilePath}" th:src="${tempProfilePath}">
     <input type="file" id="profileImg" accept=".png, .jpg, .jpeg">
 </div>
 <div>
