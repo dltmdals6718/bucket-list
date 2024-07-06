@@ -7,7 +7,6 @@ import com.example.bucketlist.domain.ProfileImage;
 import com.example.bucketlist.dto.request.MemberProfileUpdateRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.repository.MemberRepository;
-import com.example.bucketlist.repository.ProfileImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
