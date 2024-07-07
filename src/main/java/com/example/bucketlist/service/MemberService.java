@@ -1,13 +1,13 @@
 package com.example.bucketlist.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.ProfileImage;
 import com.example.bucketlist.dto.request.MemberProfileUpdateRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
+import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bucketlist.utils.S3Uploader;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,21 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AmazonS3Client amazonS3Client;
-
-    @Autowired
-    public MemberService(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder, AmazonS3Client amazonS3Client) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.amazonS3Client = amazonS3Client;
-    }
+    private final S3Uploader s3Uploader;
 
     public Long signup(MemberSignupRequest memberSignupRequest) {
 
@@ -48,12 +41,21 @@ public class MemberService {
         return memberRepository.existsByLoginId(loginId);
     }
 
-    public Member findMemberById(Long memberId) {
+    public MemberProfileResponse getMemberProfile(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException());
 
-        return member;
+        MemberProfileResponse memberProfileResponse = new MemberProfileResponse();
+        memberProfileResponse.setLoginId(member.getLoginId());
+        memberProfileResponse.setEmail(member.getEmail());
+        memberProfileResponse.setNickname(member.getNickname());
+
+        ProfileImage profileImage = member.getProfileImage();
+        if (profileImage != null)
+            memberProfileResponse.setProfileImg(s3Uploader.getProfileImgPath(member.getProfileImage()));
+
+        return memberProfileResponse;
     }
 
     @Transactional
@@ -67,30 +69,15 @@ public class MemberService {
 
         if (uploadProfileImage != null) {
 
-            ProfileImage profileImage = new ProfileImage();
-            String storeFileName = UUID.randomUUID().toString();
-            profileImage.setUploadFileName(uploadProfileImage.getOriginalFilename());
-            profileImage.setStoreFileName(storeFileName);
-            profileImage.setMember(member);
-
-            // todo: 파일 관리 클래스
             ProfileImage oldProfileImage = member.getProfileImage();
             if (oldProfileImage != null)
-                amazonS3Client.deleteObject("bucket-list-aws-s3", "profile/" + oldProfileImage.getStoreFileName());
+                s3Uploader.deleteProfileImg(oldProfileImage);
 
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(uploadProfileImage.getContentType());
-            metadata.setContentLength(uploadProfileImage.getSize());
-            amazonS3Client.putObject("bucket-list-aws-s3", "profile/" + storeFileName, uploadProfileImage.getInputStream(), metadata);
+            ProfileImage profileImage = s3Uploader.uploadProfileImg(uploadProfileImage);
+            profileImage.setMember(member);
             member.setProfileImage(profileImage);
-
         }
 
-    }
-
-    // todo: 파일 관리 클래스
-    public String profileImgPath(ProfileImage profileImage) {
-        return amazonS3Client.getResourceUrl("bucket-list-aws-s3", "profile/" + profileImage.getStoreFileName());
     }
 
 }

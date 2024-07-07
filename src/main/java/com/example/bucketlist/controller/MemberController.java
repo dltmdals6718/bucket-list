@@ -1,8 +1,8 @@
 package com.example.bucketlist.controller;
 
 import com.example.bucketlist.config.security.CustomUserDetails;
-import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.dto.request.MemberProfileUpdateRequest;
+import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.service.MailService;
 import com.example.bucketlist.dto.request.MemberSigninRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
@@ -87,12 +87,8 @@ public class MemberController {
 
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
-        Member member = memberService.findMemberById(customUserDetails.getId());
-        model.addAttribute("member", member);
-
-        // todo: 회원 Model
-        if (member.getProfileImage() != null)
-            model.addAttribute("tempProfilePath", memberService.profileImgPath(member.getProfileImage()));
+        MemberProfileResponse memberProfile = memberService.getMemberProfile(customUserDetails.getId());
+        model.addAttribute("member", memberProfile);
         return "member/profile";
     }
 
