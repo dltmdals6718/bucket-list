@@ -102,7 +102,7 @@ public class MemberController {
 
         HashMap<String, String> errorMsg = new HashMap<>();
 
-        if (uploadProfileImage.getSize() > 1024 * 1024)
+        if (uploadProfileImage != null && uploadProfileImage.getSize() > 1024 * 1024)
             errorMsg.put("profileImg", messageSource.getMessage("fileSizeOver", new String[]{"1MB"}, Locale.getDefault()));
 
         if (bindingResult.hasErrors()) {
