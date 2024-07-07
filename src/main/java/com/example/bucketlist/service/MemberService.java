@@ -65,22 +65,26 @@ public class MemberService {
         // todo: 중복된 닉네임 정책
         member.setNickname(profileUpdateRequest.getNickname());
 
-        ProfileImage profileImage = new ProfileImage();
-        String storeFileName = UUID.randomUUID().toString();
-        profileImage.setUploadFileName(uploadProfileImage.getOriginalFilename());
-        profileImage.setStoreFileName(storeFileName);
-        profileImage.setMember(member);
+        if (uploadProfileImage != null) {
 
-        // todo: 파일 관리 클래스
-        ProfileImage oldProfileImage = member.getProfileImage();
-        if (oldProfileImage != null)
-            amazonS3Client.deleteObject("bucket-list-aws-s3", "profile/" + oldProfileImage.getStoreFileName());
+            ProfileImage profileImage = new ProfileImage();
+            String storeFileName = UUID.randomUUID().toString();
+            profileImage.setUploadFileName(uploadProfileImage.getOriginalFilename());
+            profileImage.setStoreFileName(storeFileName);
+            profileImage.setMember(member);
 
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(uploadProfileImage.getContentType());
-        metadata.setContentLength(uploadProfileImage.getSize());
-        amazonS3Client.putObject("bucket-list-aws-s3", "profile/" + storeFileName, uploadProfileImage.getInputStream(), metadata);
-        member.setProfileImage(profileImage);
+            // todo: 파일 관리 클래스
+            ProfileImage oldProfileImage = member.getProfileImage();
+            if (oldProfileImage != null)
+                amazonS3Client.deleteObject("bucket-list-aws-s3", "profile/" + oldProfileImage.getStoreFileName());
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(uploadProfileImage.getContentType());
+            metadata.setContentLength(uploadProfileImage.getSize());
+            amazonS3Client.putObject("bucket-list-aws-s3", "profile/" + storeFileName, uploadProfileImage.getInputStream(), metadata);
+            member.setProfileImage(profileImage);
+
+        }
 
     }
 
