@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+    // 프로필 업데이터 버튼
     document.getElementById("profileUpdateBtn").addEventListener("click", function (evt) {
 
         const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
@@ -48,4 +50,22 @@ document.addEventListener("DOMContentLoaded", function () {
         })
 
     })
+
+    // 프로필 이미지 미리보기
+    $("#profileImg").change(function () {
+        let select_img = this.files[0];
+        if (select_img) {
+            let reader = new FileReader();
+            reader.readAsDataURL(select_img);
+            reader.onload = function () {
+                $("#preview").attr("src", reader.result);
+            }
+        }
+    });
+
+    // 프로필 이미지 클릭시 파일 업로드
+    $("#profileImgBtn").click(function () {
+        $("#profileImg").click();
+    });
+
 })
