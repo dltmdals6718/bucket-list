@@ -86,7 +86,7 @@ public class MemberController {
     }
 
     @GetMapping("/profile")
-    public String profile(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
+    public String getProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         MemberProfileResponse memberProfile = memberService.getMemberProfile(customUserDetails.getId());
         model.addAttribute("member", memberProfile);
         return "member/profile";
@@ -94,7 +94,7 @@ public class MemberController {
 
     @PutMapping("/profile")
     @ResponseBody
-    public ResponseEntity updateMember(@AuthenticationPrincipal CustomUserDetails member, @RequestPart(name = "profile") @Validated MemberProfileUpdateRequest profileUpdateRequest, BindingResult bindingResult, @RequestPart(name = "profileImg", required = false) MultipartFile uploadProfileImage) throws IOException {
+    public ResponseEntity updateProfile(@AuthenticationPrincipal CustomUserDetails member, @RequestPart(name = "profile") @Validated MemberProfileUpdateRequest profileUpdateRequest, BindingResult bindingResult, @RequestPart(name = "profileImg", required = false) MultipartFile uploadProfileImage) throws IOException {
 
         HashMap<String, String> errorMsg = new HashMap<>();
 
