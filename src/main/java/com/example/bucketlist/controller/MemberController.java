@@ -2,6 +2,7 @@ package com.example.bucketlist.controller;
 
 import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.dto.request.MemberProfileUpdateRequest;
+import com.example.bucketlist.dto.request.MemberPwdUpdateRequest;
 import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.service.MailService;
 import com.example.bucketlist.dto.request.MemberSigninRequest;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/members")
@@ -119,6 +121,23 @@ public class MemberController {
                     .body(errorMsg);
 
         memberService.updateMemberProfile(member.getId(), profileUpdateRequest, uploadProfileImage);
+
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @PutMapping("/password")
+    @ResponseBody
+    public ResponseEntity updatePwd(@AuthenticationPrincipal CustomUserDetails member, MemberPwdUpdateRequest pwdUpdateRequest) {
+
+        Map errorMsg = memberService.updatePwd(member.getId(), pwdUpdateRequest);
+
+        if (!errorMsg.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(errorMsg);
+        }
 
         return ResponseEntity
                 .ok()

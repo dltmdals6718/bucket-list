@@ -38,12 +38,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     errorMessages[0].remove();
                 }
 
-                const responeJson = JSON.parse(xhr.responseText);
-                for (const key in responeJson) {
+                const responseJson = JSON.parse(xhr.responseText);
+                for (const key in responseJson) {
                     const target = document.getElementById(key);
                     const errorMsg = document.createElement('div');
                     errorMsg.className = "error-message";
-                    errorMsg.textContent = responeJson[key];
+                    errorMsg.textContent = responseJson[key];
                     target.insertAdjacentElement('afterend', errorMsg);
                 }
             }
@@ -66,6 +66,53 @@ document.addEventListener("DOMContentLoaded", function () {
     // 프로필 이미지 클릭시 파일 업로드
     $("#profileImgBtn").click(function () {
         $("#profileImg").click();
+    });
+
+    // 비밀번호 변경 버튼
+    $("#pwdUpdateBtn").click(function () {
+
+        const csrfToken = $('meta[name="_csrf"]').attr("content");
+        const csrfHeader = $('meta[name="_csrf_header"]').attr("content");
+
+        const password = $('#password').val();
+        const newPassword = $('#newPassword').val();
+        const confirmNewPassword = $('#confirmNewPassword').val();
+
+        const data = {
+            password: password,
+            newPassword: newPassword,
+            confirmNewPassword: confirmNewPassword
+        };
+
+        $.ajax("/members/password", {
+            type: "PUT",
+            data: data,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken)
+            },
+            success: function (data) {
+                alert("비밀번호가 변경되었습니다.");
+                window.location = "/members/profile";
+            },
+            error: function (xhr, status, error) {
+
+                const errorMessages = document.getElementsByClassName("error-message");
+
+                while (errorMessages.length > 0) {
+                    errorMessages[0].remove();
+                }
+
+                const responseJson = JSON.parse(xhr.responseText);
+                for (const key in responseJson) {
+                    const target = document.getElementById(key);
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = "error-message";
+                    errorMsg.textContent = responseJson[key];
+                    target.insertAdjacentElement('afterend', errorMsg);
+                }
+
+            }
+        })
     });
 
 })
