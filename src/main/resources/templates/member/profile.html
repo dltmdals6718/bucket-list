@@ -4,14 +4,8 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <th:block th:insert="~{fragments/commonHead ::commonHead}"></th:block>
     <title>Title</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/profileUpdate.js"></script>
 </head>
 <body>
@@ -19,8 +13,8 @@
 <div class="container border border-dark-subtle rounded my-3">
     <div class="my-3">
         <div class="text-center">
-            <button id="profileImgBtn" type="button" class="position-relative rounded-circle w-25 h-25"
-                    style="border: none; background-color: transparent">
+            <button id="profileImgBtn" type="button" class="position-relative rounded-circle"
+                    style="border: none; background-color: transparent; width: 18%; height: 18%">
                 <img id="preview" class="rounded-circle img-fluid"
                      th:if="${member.profileImg}"
                      th:src="${member.profileImg}">

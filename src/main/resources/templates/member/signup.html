@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <th:block th:insert="~{fragments/commonHead ::commonHead}"></th:block>
     <title>Title</title>
     <script src="/js/emailVerification.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div th:replace="~{fragments/header :: headerFragment}"></div>
