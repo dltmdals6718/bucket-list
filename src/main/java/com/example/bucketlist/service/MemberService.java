@@ -8,6 +8,7 @@ import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.utils.S3Uploader;
+import com.example.bucketlist.utils.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -58,8 +59,14 @@ public class MemberService {
         memberProfileResponse.setNickname(member.getNickname());
 
         ProfileImage profileImage = member.getProfileImage();
-        if (profileImage != null)
+        if (profileImage == null) {
+            String email = member.getEmail();
+            String hash = SHA256Util.encrypt(email);
+            memberProfileResponse.setProfileImg("https://gravatar.com/avatar/" + hash + "?d=identicon&s=200");
+        } else {
             memberProfileResponse.setProfileImg(s3Uploader.getProfileImgPath(member.getProfileImage()));
+        }
+
 
         return memberProfileResponse;
     }
