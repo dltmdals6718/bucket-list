@@ -127,6 +127,16 @@ public class MemberController {
                 .build();
     }
 
+    @DeleteMapping("/profileImg")
+    @ResponseBody
+    public ResponseEntity deleteProfileImg(@AuthenticationPrincipal CustomUserDetails member) {
+
+        String basicProfileImg = memberService.deleteProfileImg(member.getId());
+
+        return ResponseEntity
+                .ok(basicProfileImg);
+    }
+
     @PutMapping("/password")
     @ResponseBody
     public ResponseEntity updatePwd(@AuthenticationPrincipal CustomUserDetails member, MemberPwdUpdateRequest pwdUpdateRequest) {

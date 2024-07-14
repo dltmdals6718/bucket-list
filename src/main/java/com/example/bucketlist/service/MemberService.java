@@ -7,6 +7,7 @@ import com.example.bucketlist.dto.request.MemberPwdUpdateRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.repository.MemberRepository;
+import com.example.bucketlist.repository.ProfileImageRepository;
 import com.example.bucketlist.utils.S3Uploader;
 import com.example.bucketlist.utils.SHA256Util;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProfileImageRepository profileImageRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
     private final MessageSource messageSource;
@@ -69,6 +71,23 @@ public class MemberService {
 
 
         return memberProfileResponse;
+    }
+
+    public String deleteProfileImg(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        ProfileImage profileImage = member.getProfileImage();
+        if (profileImage != null) {
+            profileImageRepository.delete(profileImage);
+            s3Uploader.deleteProfileImg(profileImage);
+        }
+
+        String email = member.getEmail();
+        String hash = SHA256Util.encrypt(email);
+        String basicProfileImg = "https://gravatar.com/avatar/" + hash + "?d=identicon&s=200";
+        return basicProfileImg;
     }
 
     @Transactional

@@ -68,6 +68,32 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#profileImg").click();
     });
 
+    $("#deleteProfileImg").click(function (event) {
+        event.stopPropagation();
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+
+        if (confirm("정말 기본 프로필 이미지로 변경하시겠습니까?") == true) {
+
+            $.ajax("/members/profileImg", {
+                type: "DELETE",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function (data) {
+                    $("#preview").attr("src", data);
+                },
+                error: function (xhr, status, error) {
+                    alert("프로필 이미지 삭제 실패.");
+                }
+            });
+        } else {
+            return;
+        }
+
+    });
+
     // 비밀번호 변경 버튼
     $("#pwdUpdateBtn").click(function () {
 
