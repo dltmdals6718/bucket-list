@@ -80,7 +80,7 @@ public class MemberService {
 
         ProfileImage profileImage = member.getProfileImage();
         if (profileImage != null) {
-            profileImageRepository.delete(profileImage);
+            member.setProfileImage(null);
             s3Uploader.deleteProfileImg(profileImage);
         }
 
