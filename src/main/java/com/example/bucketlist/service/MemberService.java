@@ -73,6 +73,7 @@ public class MemberService {
         return memberProfileResponse;
     }
 
+    @Transactional
     public String deleteProfileImg(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
@@ -80,7 +81,7 @@ public class MemberService {
 
         ProfileImage profileImage = member.getProfileImage();
         if (profileImage != null) {
-            member.setProfileImage(null);
+            profileImageRepository.delete(profileImage);
             s3Uploader.deleteProfileImg(profileImage);
         }
 
