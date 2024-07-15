@@ -14,14 +14,16 @@ public class CustomUserDetails implements UserDetails {
     private String loginPwd;
     private String nickname;
     private String email;
+    private String profileImgPath;
 
 
-    public CustomUserDetails(Long id, String loginId, String loginPwd, String nickname, String email) {
+    public CustomUserDetails(Long id, String loginId, String loginPwd, String nickname, String email, String profileImgPath) {
         this.id = id;
         this.loginId = loginId;
         this.loginPwd = loginPwd;
         this.nickname = nickname;
         this.email = email;
+        this.profileImgPath = profileImgPath;
     }
 
     @Override
@@ -73,5 +75,9 @@ public class CustomUserDetails implements UserDetails {
 
     public String getLoginId() {
         return loginId;
+    }
+
+    public String getProfileImgPath() {
+        return profileImgPath;
     }
 }
