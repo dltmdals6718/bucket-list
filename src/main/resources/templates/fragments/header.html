@@ -43,10 +43,28 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">내 정보</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                body
+                            <div class="modal-body container-fluid">
+                                <div>
+                                    <a href="/members/profile" class="d-block link-underline link-dark link-underline-opacity-0 m-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                                             fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                                        </svg>
+                                        <span>마이 페이지</span>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href="/members/logout" class="d-block link-underline link-dark link-underline-opacity-0 m-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-door-open" viewBox="0 0 16 16">
+                                            <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
+                                            <path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117M11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5M4 1.934V15h6V1.077z"/>
+                                        </svg>
+                                        <span>로그아웃</span>
+                                    </a>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 footer
@@ -84,9 +102,7 @@
                         <a class="nav-link" href="/members/profile">내 정보</a>
                     </li>
                     <li sec:authorize="isAuthenticated()" class="nav-item">
-                        <form th:action="@{/members/logout}" method="post" style="display: inline-block;">
-                            <button type="submit" class="nav-link">로그아웃</button>
-                        </form>
+                        <a class="nav-link" href="/members/logout">로그아웃</a>
                     </li>
                 </div>
             </ul>
