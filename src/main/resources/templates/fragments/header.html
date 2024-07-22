@@ -34,8 +34,7 @@
                 <button type="button" class="rounded-circle py-0 px-0"
                         style="border: none; background-color: transparent; width: 32px; height: 32px"
                         data-bs-toggle="modal" data-bs-target="#modal1">
-                    <img id="preview" class="rounded-circle w-100 h-100"
-                         src="https://gravatar.com/avatar/3cbf74a9e6218283cdfd8236f99bf5104a62c79eef262927a0c65ddb9cb3df25?d=identicon&s=200"
+                    <img class="rounded-circle w-100 h-100"
                          th:src="${#authentication.getPrincipal().profileImgPath}">
                 </button>
                 <div class="modal" id="modal1" tabindex="-1">
