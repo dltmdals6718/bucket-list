@@ -31,6 +31,10 @@ public class SecurityConfig {
                 .permitAll()
         );
 
+        http.oauth2Login((auth2) -> auth2
+                .loginProcessingUrl("/members/signin/*")
+        );
+
         http.logout((logout) -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
                 .logoutSuccessUrl("/")

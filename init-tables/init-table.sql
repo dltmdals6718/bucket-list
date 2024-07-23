@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS member (
     login_id VARCHAR(255),
     login_pwd VARCHAR(255),
     nickname VARCHAR(255),
-    email VARCHAR(255)
+    email VARCHAR(255),
+    provider VARCHAR(255),
+    provider_id BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS profile_image (
@@ -16,4 +18,3 @@ CREATE TABLE IF NOT EXISTS profile_image (
     store_file_name VARCHAR(255),
     FOREIGN KEY (member_id) REFERENCES member(id)
 );
-

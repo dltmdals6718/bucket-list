@@ -18,4 +18,7 @@ public class Member {
 
     @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private ProfileImage profileImage;
+
+    private String provider;
+    private Long providerId;
 }

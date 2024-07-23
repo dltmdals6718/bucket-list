@@ -62,7 +62,13 @@ public class MemberService {
 
         ProfileImage profileImage = member.getProfileImage();
         if (profileImage == null) {
-            String email = member.getEmail();
+            String email;
+
+            if (member.getProvider() == null)
+                email = member.getEmail();
+            else
+                email = member.getProvider() + "_" + member.getProviderId();
+
             String hash = SHA256Util.encrypt(email);
             memberProfileResponse.setProfileImg("https://gravatar.com/avatar/" + hash + "?d=identicon&s=200");
         } else {
