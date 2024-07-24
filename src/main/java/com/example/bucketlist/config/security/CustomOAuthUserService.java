@@ -5,8 +5,8 @@ import com.example.bucketlist.domain.ProfileImage;
 import com.example.bucketlist.domain.oauth.KakaoUserInfo;
 import com.example.bucketlist.domain.oauth.OAuth2UserInfo;
 import com.example.bucketlist.repository.MemberRepository;
+import com.example.bucketlist.utils.DefaultProfileImageUtil;
 import com.example.bucketlist.utils.S3Uploader;
-import com.example.bucketlist.utils.SHA256Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -51,8 +51,12 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         String profileImgPath;
         ProfileImage profileImage = member.getProfileImage();
         if (profileImage == null) {
-            String hash = SHA256Util.encrypt(provider + "_" + providerId);
-            profileImgPath = "https://gravatar.com/avatar/" + hash + "?d=identicon&s=200";
+
+            if (member.getProvider() == null)
+                profileImgPath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getEmail());
+            else
+                profileImgPath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId());
+
         } else {
             profileImgPath = s3Uploader.getProfileImgPath(profileImage);
         }

@@ -8,8 +8,8 @@ import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.ProfileImageRepository;
+import com.example.bucketlist.utils.DefaultProfileImageUtil;
 import com.example.bucketlist.utils.S3Uploader;
-import com.example.bucketlist.utils.SHA256Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,15 +62,12 @@ public class MemberService {
 
         ProfileImage profileImage = member.getProfileImage();
         if (profileImage == null) {
-            String email;
 
             if (member.getProvider() == null)
-                email = member.getEmail();
+                memberProfileResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(member.getEmail()));
             else
-                email = member.getProvider() + "_" + member.getProviderId();
+                memberProfileResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId()));
 
-            String hash = SHA256Util.encrypt(email);
-            memberProfileResponse.setProfileImg("https://gravatar.com/avatar/" + hash + "?d=identicon&s=200");
         } else {
             memberProfileResponse.setProfileImg(s3Uploader.getProfileImgPath(member.getProfileImage()));
         }
@@ -91,10 +88,13 @@ public class MemberService {
             s3Uploader.deleteProfileImg(profileImage);
         }
 
-        String email = member.getEmail();
-        String hash = SHA256Util.encrypt(email);
-        String basicProfileImg = "https://gravatar.com/avatar/" + hash + "?d=identicon&s=200";
-        return basicProfileImg;
+        String defaultProfileImagePath;
+        if (member.getProvider() == null)
+            defaultProfileImagePath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getEmail());
+        else
+            defaultProfileImagePath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId());
+
+        return defaultProfileImagePath;
     }
 
     @Transactional
