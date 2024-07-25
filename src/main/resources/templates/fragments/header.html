@@ -34,7 +34,7 @@
                 <button type="button" class="rounded-circle py-0 px-0"
                         style="border: none; background-color: transparent; width: 32px; height: 32px"
                         data-bs-toggle="modal" data-bs-target="#modal1">
-                    <img class="rounded-circle w-100 h-100"
+                    <img id="profileImgHeaderPreview" class="rounded-circle w-100 h-100"
                          th:src="${#authentication.getPrincipal().profileImgPath}">
                 </button>
                 <div class="modal" id="modal1" tabindex="-1">

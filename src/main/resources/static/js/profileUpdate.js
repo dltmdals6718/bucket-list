@@ -76,8 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#deleteProfileImg").click(function (event) {
         event.stopPropagation();
 
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute("content");
-        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute("content");
+        const csrfToken = $('meta[name="_csrf"]').attr("content");
+        const csrfHeader = $('meta[name="_csrf_header"]').attr("content");
 
         if (confirm("정말 기본 프로필 이미지로 변경하시겠습니까?") == true) {
 
@@ -88,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 success: function (data) {
                     $("#preview").attr("src", data);
+                    $("#profileImgHeaderPreview").attr("src", data);
                 },
                 error: function (xhr, status, error) {
                     alert("프로필 이미지 삭제 실패.");
