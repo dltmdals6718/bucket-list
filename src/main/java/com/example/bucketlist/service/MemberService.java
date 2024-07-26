@@ -1,5 +1,6 @@
 package com.example.bucketlist.service;
 
+import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.ProfileImage;
 import com.example.bucketlist.dto.request.MemberProfileUpdateRequest;
@@ -12,6 +13,9 @@ import com.example.bucketlist.utils.DefaultProfileImageUtil;
 import com.example.bucketlist.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,6 +98,11 @@ public class MemberService {
         else
             defaultProfileImagePath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId());
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = new CustomUserDetails(principal.getId(), principal.getLoginId(), "", principal.getNickname(), principal.getEmail(), defaultProfileImagePath);
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, "", null));
+
         return defaultProfileImagePath;
     }
 
@@ -115,6 +124,12 @@ public class MemberService {
             ProfileImage profileImage = s3Uploader.uploadProfileImg(uploadProfileImage);
             profileImage.setMember(member);
             member.setProfileImage(profileImage);
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+            CustomUserDetails userDetails = new CustomUserDetails(principal.getId(), principal.getLoginId(), "", principal.getNickname(), principal.getEmail(), s3Uploader.getProfileImgPath(profileImage));
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, "", null));
+
         }
 
     }
