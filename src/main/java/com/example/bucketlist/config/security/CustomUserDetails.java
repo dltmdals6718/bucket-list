@@ -99,6 +99,9 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
         return loginId;
     }
 
+    public Map<String, Object> getoAuth2Attributes() {
+        return oAuth2Attributes;
+    }
     public String getProfileImgPath() {
         return profileImgPath;
     }
