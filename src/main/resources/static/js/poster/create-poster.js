@@ -6,8 +6,7 @@ $(document).ready(function () {
     $("#createPosterBtn").click(function () {
 
         const title = $("#title").val();
-        const content = $("#content").val();
-        const posterImages = $("#posterImages")[0].files;
+        const content = editor.getData();
         const poster = {
             title: title,
             content: content
@@ -15,9 +14,6 @@ $(document).ready(function () {
 
         const formData = new FormData();
         formData.append("poster", new Blob([JSON.stringify(poster)], {type: "application/json"}));
-        Array.from(posterImages).forEach(file => {
-            formData.append("posterImages", file);
-        });
 
         $.ajax("/posters/write", {
             type: "POST",
@@ -29,7 +25,7 @@ $(document).ready(function () {
                 xhr.setRequestHeader(csrfHeader, csrfToken);
             },
             success: function (data) {
-                alert("posterId: " + data.posterId);
+                window.location = "/posters/" + data.posterId;
             },
             error: function (xhr, status, error) {
 

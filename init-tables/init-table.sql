@@ -18,3 +18,9 @@ CREATE TABLE IF NOT EXISTS profile_image (
     store_file_name VARCHAR(255),
     FOREIGN KEY (member_id) REFERENCES member(id)
 );
+
+CREATE TABLE IF NOT EXISTS poster (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    content TEXT
+);
