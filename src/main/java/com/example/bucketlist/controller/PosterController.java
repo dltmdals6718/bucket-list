@@ -43,6 +43,10 @@ public class PosterController {
 
         if (posterWriteRequest.getContent().isBlank())
             bindingResult.rejectValue("content", "blankPosterContent", "내용 미입력");
+        else {
+            if (posterWriteRequest.getContent().length() > 10000)
+                bindingResult.rejectValue("content", "TooLargePosterContent", new Object[]{10000L}, "본문 내용 초과");
+        }
 
 
         if (bindingResult.hasErrors())
