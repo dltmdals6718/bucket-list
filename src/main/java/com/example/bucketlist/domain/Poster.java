@@ -1,10 +1,9 @@
 package com.example.bucketlist.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -16,5 +15,8 @@ public class Poster {
 
     private String title;
     private String content;
+
+    @OneToMany(mappedBy = "poster")
+    private List<PosterImage> posterImageList;
 
 }

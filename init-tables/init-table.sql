@@ -24,3 +24,12 @@ CREATE TABLE IF NOT EXISTS poster (
     title VARCHAR(255),
     content TEXT
 );
+
+CREATE TABLE IF NOT EXISTS poster_image (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    poster_id BIGINT,
+    upload_date DATETIME,
+    upload_file_name VARCHAR(255),
+    store_file_name VARCHAR(255),
+    FOREIGN KEY (poster_id) REFERENCES poster(id)
+);

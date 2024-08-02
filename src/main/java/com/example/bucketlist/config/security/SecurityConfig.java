@@ -20,6 +20,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/members/profile").authenticated()
                 .requestMatchers("/posters/write").authenticated()
+                .requestMatchers("/posters/image").authenticated()
                 .anyRequest().permitAll());
 
         http.formLogin((form) -> form
