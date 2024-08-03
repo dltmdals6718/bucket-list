@@ -68,4 +68,39 @@ public class PosterController {
         return "poster/view-poster";
     }
 
+    @GetMapping("/{posterId}/update")
+    public String updatePosterForm(@PathVariable Long posterId, Model model) {
+
+        // todo: viewPoster -> getPoster
+        Poster poster = posterService.viewPoster(posterId);
+        model.addAttribute("poster", poster);
+
+        return "poster/update-poster";
+    }
+
+    @PutMapping("/{posterId}/update")
+    public ResponseEntity<Map> updatePoster(@PathVariable Long posterId,
+                                            @RequestPart(name = "poster") PosterWriteRequest posterWriteRequest,
+                                            BindingResult bindingResult) {
+
+        if (posterWriteRequest.getTitle().isBlank())
+            bindingResult.rejectValue("title", "blankPosterTitle", "제목 미입력");
+
+        if (posterWriteRequest.getContent().isBlank())
+            bindingResult.rejectValue("content", "blankPosterContent", "내용 미입력");
+        else {
+            if (posterWriteRequest.getContent().length() > 10000)
+                bindingResult.rejectValue("content", "TooLargePosterContent", new Object[]{10000L}, "본문 내용 초과");
+        }
+
+        if (bindingResult.hasErrors())
+            throw new InValidInputException(bindingResult);
+
+        posterService.updatePoster(posterId, posterWriteRequest);
+        HashMap<String, Long> response = new HashMap<>();
+        response.put("posterId", posterId);
+        return ResponseEntity
+                .ok(response);
+    }
+
 }

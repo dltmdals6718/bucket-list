@@ -3,6 +3,7 @@ package com.example.bucketlist.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,6 @@ public class Poster {
     private String content;
 
     @OneToMany(mappedBy = "poster")
-    private List<PosterImage> posterImageList;
+    private List<PosterImage> posterImageList = new ArrayList<>();
 
 }
