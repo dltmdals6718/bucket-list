@@ -9,5 +9,8 @@
 <body>
 <div th:replace="~{fragments/header :: headerFragment}"></div>
 <a href="/posters/write">게시글 작성</a>
+<div th:each="poster : ${posters}">
+    <a th:text="${poster.title}" th:href="@{/posters/{id}(id = ${poster.id})}"></a>
+</div>
 </body>
 </html>
