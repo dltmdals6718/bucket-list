@@ -52,7 +52,7 @@ public class PosterController {
         if (bindingResult.hasErrors())
             throw new InValidInputException(bindingResult);
 
-        Long posterId = posterService.createPoster(posterWriteRequest);
+        Long posterId = posterService.createPoster(member.getId(), posterWriteRequest);
         HashMap<String, Long> response = new HashMap<>();
         response.put("posterId", posterId);
         return ResponseEntity

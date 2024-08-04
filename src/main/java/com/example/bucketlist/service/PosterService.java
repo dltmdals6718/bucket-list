@@ -1,7 +1,9 @@
 package com.example.bucketlist.service;
 
+import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
+import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterImageRepository;
 import com.example.bucketlist.repository.PosterRepository;
 import com.example.bucketlist.utils.S3Uploader;
@@ -19,20 +21,26 @@ public class PosterService {
     private S3Uploader s3Uploader;
     private PosterRepository posterRepository;
     private PosterImageRepository posterImageRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
-    public PosterService(S3Uploader s3Uploader, PosterRepository posterRepository, PosterImageRepository posterImageRepository) {
+    public PosterService(S3Uploader s3Uploader, PosterRepository posterRepository, PosterImageRepository posterImageRepository, MemberRepository memberRepository) {
         this.s3Uploader = s3Uploader;
         this.posterRepository = posterRepository;
         this.posterImageRepository = posterImageRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional
-    public Long createPoster(PosterWriteRequest posterWriteRequest) {
+    public Long createPoster(Long memberId, PosterWriteRequest posterWriteRequest) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException());
 
         Poster poster = new Poster();
         poster.setTitle(posterWriteRequest.getTitle());
         poster.setContent(posterWriteRequest.getContent());
+        poster.setMember(member);
         posterRepository.save(poster);
 
         List<String> imageUUIDs = UploadFileUtil.imageUUIDExtractor(posterWriteRequest.getContent());

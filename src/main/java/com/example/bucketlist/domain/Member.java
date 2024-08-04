@@ -3,6 +3,9 @@ package com.example.bucketlist.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 public class Member {
@@ -21,4 +24,8 @@ public class Member {
 
     private String provider;
     private Long providerId;
+
+    @OneToMany(mappedBy = "member")
+    private List<Poster> posters = new ArrayList<>();
+
 }

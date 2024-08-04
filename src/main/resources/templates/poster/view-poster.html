@@ -13,5 +13,8 @@
 <div th:replace="~{fragments/header ::headerFragment}"></div>
 <div th:text="${poster.title}"></div>
 <div th:utext="${poster.content}" class="ck-content"></div>
+<th:block sec:authorize="isAuthenticated()">
+    <a th:if="${#authentication.getPrincipal().id == poster.member.id}" th:href="@{/posters/{posterId}/update(posterId = ${poster.id})}">수정</a>
+</th:block>
 </body>
 </html>

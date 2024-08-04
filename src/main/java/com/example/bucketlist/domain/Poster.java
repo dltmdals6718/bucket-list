@@ -17,7 +17,11 @@ public class Poster {
     private String title;
     private String content;
 
-    @OneToMany(mappedBy = "poster")
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany
     private List<PosterImage> posterImageList = new ArrayList<>();
 
 }
