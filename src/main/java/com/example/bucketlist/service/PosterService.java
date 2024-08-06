@@ -9,6 +9,7 @@ import com.example.bucketlist.repository.PosterRepository;
 import com.example.bucketlist.utils.S3Uploader;
 import com.example.bucketlist.utils.UploadFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +55,7 @@ public class PosterService {
         return poster.getId();
     }
 
-    public Poster viewPoster(Long posterId) {
+    public Poster getPosterForView(Long posterId) {
 
         Poster poster = posterRepository.findById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
@@ -62,11 +63,26 @@ public class PosterService {
         return poster;
     }
 
-    @Transactional
-    public Poster updatePoster(Long posterId, PosterWriteRequest posterWriteRequest) {
+    public Poster getPosterForUpdate(Long memberId, Long posterId) {
 
         Poster poster = posterRepository.findById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
+
+        if (memberId != poster.getMember().getId())
+            throw new AccessDeniedException("접근 권한 없음.");
+
+        return poster;
+    }
+
+    @Transactional
+    public Poster updatePoster(Long memberId, Long posterId, PosterWriteRequest posterWriteRequest) {
+
+        Poster poster = posterRepository.findById(posterId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        if (memberId != poster.getMember().getId())
+            throw new AccessDeniedException("접근 권한 없음.");
+
         poster.setTitle(posterWriteRequest.getTitle());
         poster.setContent(posterWriteRequest.getContent());
 

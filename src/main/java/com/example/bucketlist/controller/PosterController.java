@@ -62,24 +62,25 @@ public class PosterController {
     @GetMapping("/{posterId}")
     public String viewPoster(@PathVariable Long posterId, Model model) {
 
-        Poster poster = posterService.viewPoster(posterId);
+        Poster poster = posterService.getPosterForView(posterId);
         model.addAttribute("poster", poster);
 
         return "poster/view-poster";
     }
 
     @GetMapping("/{posterId}/update")
-    public String updatePosterForm(@PathVariable Long posterId, Model model) {
+    public String updatePosterForm(@AuthenticationPrincipal CustomUserDetails member,
+                                   @PathVariable Long posterId, Model model) {
 
-        // todo: viewPoster -> getPoster
-        Poster poster = posterService.viewPoster(posterId);
+        Poster poster = posterService.getPosterForUpdate(member.getId(), posterId);
         model.addAttribute("poster", poster);
 
         return "poster/update-poster";
     }
 
     @PutMapping("/{posterId}/update")
-    public ResponseEntity<Map> updatePoster(@PathVariable Long posterId,
+    public ResponseEntity<Map> updatePoster(@AuthenticationPrincipal CustomUserDetails member,
+                                            @PathVariable Long posterId,
                                             @RequestPart(name = "poster") PosterWriteRequest posterWriteRequest,
                                             BindingResult bindingResult) {
 
@@ -96,7 +97,7 @@ public class PosterController {
         if (bindingResult.hasErrors())
             throw new InValidInputException(bindingResult);
 
-        posterService.updatePoster(posterId, posterWriteRequest);
+        posterService.updatePoster(member.getId(), posterId, posterWriteRequest);
         HashMap<String, Long> response = new HashMap<>();
         response.put("posterId", posterId);
         return ResponseEntity

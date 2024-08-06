@@ -15,12 +15,12 @@ import java.util.Locale;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalApiExceptionHandler {
 
     private MessageSource messageSource;
 
     @Autowired
-    public GlobalExceptionHandler(MessageSource messageSource) {
+    public GlobalApiExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
