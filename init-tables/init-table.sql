@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS member (
     login_pwd VARCHAR(255),
     nickname VARCHAR(255),
     email VARCHAR(255),
+    signup_date DATETIME,
     provider VARCHAR(255),
     provider_id BIGINT
 );
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS profile_image (
 CREATE TABLE IF NOT EXISTS poster (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT,
+    created_date DATETIME,
     title VARCHAR(255),
     content TEXT,
     FOREIGN KEY (member_id) REFERENCES member(id)

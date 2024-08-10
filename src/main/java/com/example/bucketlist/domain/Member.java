@@ -2,7 +2,10 @@ package com.example.bucketlist.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,9 @@ public class Member {
 
     @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private ProfileImage profileImage;
+
+    @CreationTimestamp(source = SourceType.DB)
+    private LocalDateTime signupDate;
 
     private String provider;
     private Long providerId;
