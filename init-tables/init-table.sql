@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS member (
     email VARCHAR(255),
     signup_date DATETIME,
     provider VARCHAR(255),
-    provider_id BIGINT
+    provider_id VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS profile_image (

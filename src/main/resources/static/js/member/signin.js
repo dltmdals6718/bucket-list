@@ -5,6 +5,11 @@ $(document).ready(function () {
     });
 
     $("#googleLoginBtn").click(function () {
-        alert("준비중");
-    })
+        window.location = "/oauth2/authorization/google";
+    });
+
+    $("#naverLoginBtn").click(function () {
+        window.location = "/oauth2/authorization/naver";
+    });
+
 });

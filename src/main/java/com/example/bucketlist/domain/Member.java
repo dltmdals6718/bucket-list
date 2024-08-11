@@ -29,7 +29,7 @@ public class Member {
     private LocalDateTime signupDate;
 
     private String provider;
-    private Long providerId;
+    private String providerId;
 
     @OneToMany(mappedBy = "member")
     private List<Poster> posters = new ArrayList<>();

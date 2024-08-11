@@ -2,7 +2,9 @@ package com.example.bucketlist.config.security;
 
 import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.ProfileImage;
+import com.example.bucketlist.domain.oauth.GoogleUserInfo;
 import com.example.bucketlist.domain.oauth.KakaoUserInfo;
+import com.example.bucketlist.domain.oauth.NaverUserInfo;
 import com.example.bucketlist.domain.oauth.OAuth2UserInfo;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.utils.DefaultProfileImageUtil;
@@ -13,6 +15,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class CustomOAuthUserService extends DefaultOAuth2UserService {
@@ -31,12 +35,20 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         OAuth2User user = super.loadUser(userRequest);
 
         OAuth2UserInfo oAuth2UserInfo = null;
-        if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
-            oAuth2UserInfo = new KakaoUserInfo(user.getAttribute("id"), user.getAttribute("kakao_account"));
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+
+        if (registrationId.equals("kakao")) {
+            oAuth2UserInfo = new KakaoUserInfo(user.getAttribute("id").toString(), user.getAttribute("kakao_account"));
+        } else if (registrationId.equals("google")) {
+            Map<String, Object> attributes = user.getAttributes();
+            oAuth2UserInfo = new GoogleUserInfo(attributes);
+        } else if (registrationId.equals("naver")) {
+            Map<String, Object> attributes = user.getAttributes();
+            oAuth2UserInfo = new NaverUserInfo(attributes);
         }
 
         String provider = oAuth2UserInfo.getProvider();
-        Long providerId = oAuth2UserInfo.getProviderId();
+        String providerId = oAuth2UserInfo.getProviderId();
         String name = oAuth2UserInfo.getName();
 
         Member member = memberRepository.findByProviderAndProviderId(provider, providerId);

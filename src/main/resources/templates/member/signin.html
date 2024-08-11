@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <th:block th:insert="~{fragments/commonHead ::commonHead}"></th:block>
     <title>Title</title>
+    <style>
+        .sns-login-btn {
+            width: 45px;
+            height: 45px;
+            padding: 0;
+            background-color: transparent;
+            border: none;
+        }
+    </style>
     <script src="/js/member/signin.js"></script>
 </head>
 <body>
@@ -21,30 +30,41 @@
                     <input class="form-control" type="password" th:field="*{loginPwd}">
                 </div>
                 <div class="d-grid mb-3">
-                    <button class="btn btn-secondary" type="submit">로그인하기</button>
+                    <button class="btn btn-secondary" type="submit">로그인</button>
                 </div>
-                <span th:if="${errorMsg}" th:text="${errorMsg}"></span>
+                <span th:if="${errorMsg}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" style="margin: 5px"
+                             class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                        </svg>
+                    <span th:text="${errorMsg}" style="color: orange"></span>
+                </span>
             </form>
         </div>
         <div class="text-end">
             <a class="link-secondary link-offset-1" href="/members/signup">회원가입</a>
         </div>
-
         <hr>
         <p class="text-secondary text-center">SNS 로그인</p>
-        <div class="mb-3">
-            <button id="kakaoLoginBtn" class="btn" style="background-color: #FEE500;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+        <div class="mb-3 d-flex justify-content-center gap-3">
+            <button id="kakaoLoginBtn" class="sns-login-btn" style="background-color: #FEE500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                      class="bi bi-chat-fill"
                      viewBox="0 0 16 16">
                     <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9 9 0 0 0 8 15"/>
                 </svg>
             </button>
-            <button id="googleLoginBtn" class="btn" style="background-color: whitesmoke;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google"
-                     viewBox="0 0 16 16">
-                    <path d="M15.545 6.558a9.4 9.4 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.7 7.7 0 0 1 5.352 2.082l-2.284 2.284A4.35 4.35 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.8 4.8 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.7 3.7 0 0 0 1.599-2.431H8v-3.08z"/>
+            <button id="googleLoginBtn" class="sns-login-btn" style="border: 1px solid whitesmoke;">
+                <svg viewBox="0 0 128 128" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" width="25" height="25"><g id="_x31__stroke"><g id="Google">
+                    <path clip-rule="evenodd" d="M27.585,64c0-4.157,0.69-8.143,1.923-11.881L7.938,35.648    C3.734,44.183,1.366,53.801,1.366,64c0,10.191,2.366,19.802,6.563,28.332l21.558-16.503C28.266,72.108,27.585,68.137,27.585,64" fill="#FBBC05" fill-rule="evenodd"/>
+                    <path clip-rule="evenodd" d="M65.457,26.182c9.031,0,17.188,3.2,23.597,8.436L107.698,16    C96.337,6.109,81.771,0,65.457,0C40.129,0,18.361,14.484,7.938,35.648l21.569,16.471C34.477,37.033,48.644,26.182,65.457,26.182" fill="#EA4335" fill-rule="evenodd"/>
+                    <path clip-rule="evenodd" d="M65.457,101.818c-16.812,0-30.979-10.851-35.949-25.937    L7.938,92.349C18.361,113.516,40.129,128,65.457,128c15.632,0,30.557-5.551,41.758-15.951L86.741,96.221    C80.964,99.86,73.689,101.818,65.457,101.818" fill="#34A853" fill-rule="evenodd"/>
+                    <path clip-rule="evenodd" d="M126.634,64c0-3.782-0.583-7.855-1.457-11.636H65.457v24.727    h34.376c-1.719,8.431-6.397,14.912-13.092,19.13l20.474,15.828C118.981,101.129,126.634,84.861,126.634,64" fill="#4285F4" fill-rule="evenodd"/></g></g>
                 </svg>
+            </button>
+            <button id="naverLoginBtn" class="sns-login-btn">
+                <img src="https://bucket-list-aws-s3.s3.ap-northeast-2.amazonaws.com/logo/naverLoginBtn.png" width="100%" height="100%">
             </button>
         </div>
     </div>
