@@ -22,6 +22,7 @@ public class Poster {
 
     private String title;
     private String content;
+    private Boolean isPrivate;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

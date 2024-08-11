@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS profile_image (
 CREATE TABLE IF NOT EXISTS poster (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT,
+    is_private TINYINT(1),
     created_date DATETIME,
     title VARCHAR(255),
     content TEXT,

@@ -42,6 +42,7 @@ public class PosterService {
         poster.setTitle(posterWriteRequest.getTitle());
         poster.setContent(posterWriteRequest.getContent());
         poster.setMember(member);
+        poster.setIsPrivate(posterWriteRequest.getIsPrivate());
         posterRepository.save(poster);
 
         List<String> imageUUIDs = UploadFileUtil.imageUUIDExtractor(posterWriteRequest.getContent());
@@ -85,6 +86,7 @@ public class PosterService {
 
         poster.setTitle(posterWriteRequest.getTitle());
         poster.setContent(posterWriteRequest.getContent());
+        poster.setIsPrivate(posterWriteRequest.getIsPrivate());
 
         List<String> existingUUIDs = posterImageRepository.findAllByPoster(poster).stream()
                 .map(p -> p.getStoreFileName())
@@ -102,7 +104,6 @@ public class PosterService {
                         s3Uploader.deletePosterImg(posterImage);
                     });
         }
-
 
         // 게시글 수정시 추가된 업로드 이미지 파일 등록
         for (String receivedUUID : receivedUUIDs) {

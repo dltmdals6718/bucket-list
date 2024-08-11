@@ -4,12 +4,13 @@ $(document).ready(function () {
     const csrfHeader = $('meta[name="_csrf_header"]').attr("content");
 
     $("#updatePosterBtn").click(function () {
-
+        const isPrivate = $("#isPrivate").is(':checked');
         const title = $("#title").val();
         const content = editor.getData();
         const poster = {
             title: title,
-            content: content
+            content: content,
+            isPrivate: isPrivate
         };
 
         const formData = new FormData();

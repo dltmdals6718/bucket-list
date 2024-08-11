@@ -11,5 +11,6 @@ public class PosterWriteRequest {
 
     private String title;
     private String content;
+    private Boolean isPrivate;
 
 }
