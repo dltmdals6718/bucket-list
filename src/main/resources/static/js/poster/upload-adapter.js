@@ -20,7 +20,7 @@ class UploadAdapter {
 
     _initRequest() {
         const xhr = this.xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://13.238.128.85:8080/posters/image', true);
+        xhr.open('POST', 'http://bucket-list.kr/posters/image', true);
 
         const csrfToken = $('meta[name="_csrf"]').attr("content");
         const csrfHeader = $('meta[name="_csrf_header"]').attr("content");
