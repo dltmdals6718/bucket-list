@@ -38,3 +38,17 @@ CREATE TABLE IF NOT EXISTS poster_image (
     store_file_name VARCHAR(255),
     FOREIGN KEY (poster_id) REFERENCES poster(id)
 );
+
+CREATE TABLE IF NOT EXISTS tag (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+/* 게시글 삭제시 poster_tag 삭제, 태그는 다른 게시글이 사용하고 있을 수 있으니 놔둔다. */
+CREATE TABLE IF NOT EXISTS poster_tag (
+    poster_id BIGINT,
+    tag_id BIGINT,
+    PRIMARY KEY (poster_id, tag_id),
+    FOREIGN KEY (poster_id) REFERENCES poster(id),
+    FOREIGN KEY (tag_id) REFERENCES tag(id)
+);

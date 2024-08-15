@@ -2,10 +2,11 @@ package com.example.bucketlist.service;
 
 import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.Poster;
+import com.example.bucketlist.domain.PosterTag;
+import com.example.bucketlist.domain.Tag;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
-import com.example.bucketlist.repository.MemberRepository;
-import com.example.bucketlist.repository.PosterImageRepository;
-import com.example.bucketlist.repository.PosterRepository;
+import com.example.bucketlist.repository.*;
+import com.example.bucketlist.utils.EscapeUtils;
 import com.example.bucketlist.utils.S3Uploader;
 import com.example.bucketlist.utils.UploadFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,17 @@ public class PosterService {
     private PosterRepository posterRepository;
     private PosterImageRepository posterImageRepository;
     private MemberRepository memberRepository;
+    private TagRepository tagRepository;
+    private PosterTagRepository posterTagRepository;
 
     @Autowired
-    public PosterService(S3Uploader s3Uploader, PosterRepository posterRepository, PosterImageRepository posterImageRepository, MemberRepository memberRepository) {
+    public PosterService(S3Uploader s3Uploader, PosterRepository posterRepository, PosterImageRepository posterImageRepository, MemberRepository memberRepository, TagRepository tagRepository, PosterTagRepository posterTagRepository) {
         this.s3Uploader = s3Uploader;
         this.posterRepository = posterRepository;
         this.posterImageRepository = posterImageRepository;
         this.memberRepository = memberRepository;
+        this.tagRepository = tagRepository;
+        this.posterTagRepository = posterTagRepository;
     }
 
     @Transactional
@@ -44,6 +49,25 @@ public class PosterService {
         poster.setMember(member);
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
         posterRepository.save(poster);
+
+        for (String name : posterWriteRequest.getTags()) {
+
+            String escapedName = EscapeUtils.escapeHtml(name);
+            if (escapedName.isBlank())
+                continue;
+
+            Tag tag = tagRepository.findByName(escapedName)
+                    .orElseGet(() -> {
+                        Tag newTag = new Tag();
+                        newTag.setName(escapedName);
+                        return tagRepository.save(newTag);
+                    });
+
+            PosterTag posterTag = new PosterTag();
+            posterTag.setPoster(poster);
+            posterTag.setTag(tag);
+            posterTagRepository.save(posterTag);
+        }
 
         List<String> imageUUIDs = UploadFileUtil.imageUUIDExtractor(posterWriteRequest.getContent());
         for (String imageUUID : imageUUIDs) {
@@ -92,7 +116,6 @@ public class PosterService {
                 .map(p -> p.getStoreFileName())
                 .collect(Collectors.toList());
         List<String> receivedUUIDs = UploadFileUtil.imageUUIDExtractor(posterWriteRequest.getContent());
-
 
         // 게시글 수정시 삭제된 업로드 이미지 파일 삭제 방법
         // 기존 게시글의 이미지 UUIDs 현재 게시글의 이미지 UUIDs 제거하면 삭제된 UUIDs가 남는다.

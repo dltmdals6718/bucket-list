@@ -31,4 +31,7 @@ public class Poster {
     @OneToMany
     private List<PosterImage> posterImageList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "poster")
+    private List<PosterTag> posterTags = new ArrayList<>();
+
 }

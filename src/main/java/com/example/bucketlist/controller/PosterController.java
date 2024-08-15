@@ -41,13 +41,16 @@ public class PosterController {
         if (posterWriteRequest.getTitle().isBlank())
             bindingResult.rejectValue("title", "blankPosterTitle", "제목 미입력");
 
-        if (posterWriteRequest.getContent().isBlank())
+        if (posterWriteRequest.getContent().isBlank()) {
             bindingResult.rejectValue("content", "blankPosterContent", "내용 미입력");
-        else {
+        } else {
             if (posterWriteRequest.getContent().length() > 10000)
                 bindingResult.rejectValue("content", "TooLargePosterContent", new Object[]{10000L}, "본문 내용 초과");
         }
 
+        if (posterWriteRequest.getTags().size() > 10) {
+            bindingResult.rejectValue("tags", "tooManyPosterTags", new Object[]{10}, "태그 개수 초과");
+        }
 
         if (bindingResult.hasErrors())
             throw new InValidInputException(bindingResult);

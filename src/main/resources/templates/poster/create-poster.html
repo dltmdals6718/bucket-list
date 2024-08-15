@@ -60,7 +60,7 @@
                 toolbar: {
                     items: [
                         'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'fontSize', 'fontColor', 'fontBackgroundColor', '|' , 'imageUpload'
+                        'fontSize', 'fontColor', 'fontBackgroundColor', '|', 'imageUpload'
                     ]
                 }
             })
@@ -77,6 +77,11 @@
     <div class="mb-3">
         <label for="title" class="form-label">제목</label>
         <input id="title" name="title" type="text" class="form-control">
+    </div>
+    <div>
+        <ul class="px-0">
+            <input id="tags" class="d-inline-flex" style="border: none; min-width: 220px" placeholder="태그를 추가해주세요. (최대 10개)">
+        </ul>
     </div>
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="isPrivate">
