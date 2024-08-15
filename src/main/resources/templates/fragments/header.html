@@ -97,6 +97,12 @@
                     <li sec:authorize="isAnonymous()" class="nav-item">
                         <a class="nav-link" href="/members/signin">로그인</a>
                     </li>
+                    <li sec:authorize="isAnonymous()" class="nav-item">
+                        <a class="nav-link" href="/members/signup">회원가입</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated()" class="nav-item">
+                        <a class="nav-link" href="/posters/write">글쓰기</a>
+                    </li>
                     <li sec:authorize="isAuthenticated()" class="nav-item">
                         <a class="nav-link" href="/members/profile">내 정보</a>
                     </li>
