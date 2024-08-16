@@ -7,10 +7,15 @@ $(document).ready(function () {
         const isPrivate = $("#isPrivate").is(':checked');
         const title = $("#title").val();
         const content = editor.getData();
+        const tags = $('[name = "tag"]').map(function () {
+            return $(this).text();
+        }).get();
+
         const poster = {
             title: title,
             content: content,
-            isPrivate: isPrivate
+            isPrivate: isPrivate,
+            tags: tags
         };
 
         const formData = new FormData();
@@ -53,4 +58,45 @@ $(document).ready(function () {
             }
         });
     });
+
+    // 태그 삽입 이벤트
+    $("#tags").on('keypress', function (e) {
+        if (e.which == 13) {
+
+            const tagValue = $(this).val().trim();
+
+            if (tagValue) {
+                const tagHtml = `
+                    <li class="d-inline-flex ps-2 me-1 my-1 border rounded bg-light-subtle">
+                        <span name="tag">${escapeHtml(tagValue)}</span>
+                        <button name="delete-tag-btn" class="d-inline-flex align-items-center border border-0 bg-transparent">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-x" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </button>
+                    </li>
+                    `;
+
+                $(this).before(tagHtml);
+                $(this).val('');
+            }
+        }
+    });
+
+    // 태그 삭제 이벤트
+    $(document).on('click', 'button[name="delete-tag-btn"]', function () {
+        $(this).closest('li').remove();
+    });
+
+
 });
+
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}

@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Embeddable
 @Getter @Setter
+@EqualsAndHashCode
 public class PosterTagId implements Serializable {
 
     @Column(name = "poster_id")

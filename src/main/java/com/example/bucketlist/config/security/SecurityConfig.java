@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .requestMatchers("/members/profile").authenticated()
                 .requestMatchers("/posters/write").authenticated()
                 .requestMatchers("/posters/image").authenticated()
+                .requestMatchers("/posters/*/update").authenticated()
                 .anyRequest().permitAll());
 
         http.formLogin((form) -> form

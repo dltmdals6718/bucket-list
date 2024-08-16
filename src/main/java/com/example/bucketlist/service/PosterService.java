@@ -1,9 +1,6 @@
 package com.example.bucketlist.service;
 
-import com.example.bucketlist.domain.Member;
-import com.example.bucketlist.domain.Poster;
-import com.example.bucketlist.domain.PosterTag;
-import com.example.bucketlist.domain.Tag;
+import com.example.bucketlist.domain.*;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.repository.*;
 import com.example.bucketlist.utils.EscapeUtils;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,16 +110,56 @@ public class PosterService {
         poster.setContent(posterWriteRequest.getContent());
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
 
+
+        // 삭제된 태그 처리
+        // 게시글의 기존 태그 목록에서, 입력으로 들어온 태그 목록을 지우면 삭제된 태그만 남는다
+        List<String> existingTagNames = posterTagRepository.findByPoster(poster).stream()
+                .map(posterTag -> posterTag.getTag().getName())
+                .collect(Collectors.toList());
+        List<String> receivedTagNames = posterWriteRequest.getTags().stream().toList().stream()
+                .map(name -> EscapeUtils.escapeHtml(name))
+                .collect(Collectors.toList());
+
+        existingTagNames.removeAll(receivedTagNames);
+        for (String deletedTagName : existingTagNames) {
+            Tag tag = tagRepository.findByName(deletedTagName)
+                    .orElseThrow(() -> new IllegalArgumentException());
+            posterTagRepository.deleteByPosterAndTag(poster, tag);
+        }
+
+        // 추가된 태그 처리
+        for (String name : posterWriteRequest.getTags()) {
+
+            String escapedName = EscapeUtils.escapeHtml(name);
+            if (escapedName.isBlank())
+                continue;
+
+            Tag tag = tagRepository.findByName(escapedName)
+                    .orElseGet(() -> {
+                        Tag newTag = new Tag();
+                        newTag.setName(escapedName);
+                        return tagRepository.save(newTag);
+                    });
+
+            Optional<PosterTag> posterTag = posterTagRepository.findByPosterAndTag(poster, tag);
+            if (!posterTag.isPresent()) {
+                PosterTag newPosterTag = new PosterTag();
+                newPosterTag.setPoster(poster);
+                newPosterTag.setTag(tag);
+                posterTagRepository.save(newPosterTag);
+            }
+        }
+
+        // 게시글 수정시 삭제된 업로드 이미지 파일 삭제 방법
+        // 기존 게시글의 이미지 UUIDs 현재 게시글의 이미지 UUIDs 제거하면 삭제된 UUIDs가 남는다.
         List<String> existingUUIDs = posterImageRepository.findAllByPoster(poster).stream()
                 .map(p -> p.getStoreFileName())
                 .collect(Collectors.toList());
         List<String> receivedUUIDs = UploadFileUtil.imageUUIDExtractor(posterWriteRequest.getContent());
 
-        // 게시글 수정시 삭제된 업로드 이미지 파일 삭제 방법
-        // 기존 게시글의 이미지 UUIDs 현재 게시글의 이미지 UUIDs 제거하면 삭제된 UUIDs가 남는다.
         existingUUIDs.removeAll(receivedUUIDs);
-        for (String existingUUID : existingUUIDs) {
-            posterImageRepository.findByStoreFileName(existingUUID)
+        for (String deletedUUID : existingUUIDs) {
+            posterImageRepository.findByStoreFileName(deletedUUID)
                     .ifPresent(posterImage -> {
                         posterImageRepository.delete(posterImage);
                         s3Uploader.deletePosterImg(posterImage);
