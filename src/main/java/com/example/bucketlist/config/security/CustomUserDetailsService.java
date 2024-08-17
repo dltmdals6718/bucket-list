@@ -26,9 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findMemberByLoginId(username);
-        if (member == null)
-            throw new UsernameNotFoundException("no user");
+        Member member = memberRepository.findMemberByLoginId(username)
+                .orElseThrow(() -> new UsernameNotFoundException("no user"));
 
         String profileImgPath;
         ProfileImage profileImage = member.getProfileImage();

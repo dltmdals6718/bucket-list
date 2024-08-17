@@ -51,14 +51,14 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         String providerId = oAuth2UserInfo.getProviderId();
         String name = oAuth2UserInfo.getName();
 
-        Member member = memberRepository.findByProviderAndProviderId(provider, providerId);
-        if (member == null) {
-            member = new Member();
-            member.setProvider(provider);
-            member.setProviderId(providerId);
-            member.setNickname(name);
-            memberRepository.save(member);
-        }
+        Member member = memberRepository.findByProviderAndProviderId(provider, providerId)
+                .orElseGet(() -> {
+                    Member newMember = new Member();
+                    newMember.setProvider(provider);
+                    newMember.setProviderId(providerId);
+                    newMember.setNickname(name);
+                    return memberRepository.save(newMember);
+                });
 
         String profileImgPath;
         ProfileImage profileImage = member.getProfileImage();
