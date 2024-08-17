@@ -91,7 +91,7 @@ public class PosterService {
         Poster poster = posterRepository.findById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
 
-        if (memberId != poster.getMember().getId())
+        if (!memberId.equals(poster.getMember().getId()))
             throw new AccessDeniedException("접근 권한 없음.");
 
         return poster;
@@ -102,8 +102,7 @@ public class PosterService {
 
         Poster poster = posterRepository.findById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
-
-        if (memberId != poster.getMember().getId())
+        if (!memberId.equals(poster.getMember().getId()))
             throw new AccessDeniedException("접근 권한 없음.");
 
         poster.setTitle(posterWriteRequest.getTitle());
