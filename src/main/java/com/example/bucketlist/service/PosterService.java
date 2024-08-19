@@ -2,6 +2,7 @@ package com.example.bucketlist.service;
 
 import com.example.bucketlist.domain.*;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
+import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.repository.*;
 import com.example.bucketlist.utils.EscapeUtils;
 import com.example.bucketlist.utils.S3Uploader;
@@ -78,9 +79,9 @@ public class PosterService {
         return poster.getId();
     }
 
-    public Poster getPosterForView(Long posterId) {
+    public PosterDetailsResponse getPosterForView(Long posterId) {
 
-        Poster poster = posterRepository.findById(posterId)
+        PosterDetailsResponse poster = posterRepository.findPosterDetailsById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
 
         return poster;

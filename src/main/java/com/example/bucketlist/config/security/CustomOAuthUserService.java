@@ -70,7 +70,7 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
                 profileImgPath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId());
 
         } else {
-            profileImgPath = s3Uploader.getProfileImgPath(profileImage);
+            profileImgPath = s3Uploader.getProfileImgPath(profileImage.getStoreFileName());
         }
 
         CustomUserDetails details = new CustomUserDetails(member.getId(), provider + "_" + providerId, "", name, "", profileImgPath, user.getAttributes());

@@ -73,7 +73,7 @@ public class MemberService {
                 memberProfileResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId()));
 
         } else {
-            memberProfileResponse.setProfileImg(s3Uploader.getProfileImgPath(member.getProfileImage()));
+            memberProfileResponse.setProfileImg(s3Uploader.getProfileImgPath(profileImage.getStoreFileName()));
         }
 
 
@@ -127,7 +127,7 @@ public class MemberService {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-            CustomUserDetails userDetails = new CustomUserDetails(principal.getId(), principal.getLoginId(), "", principal.getNickname(), principal.getEmail(), s3Uploader.getProfileImgPath(profileImage));
+            CustomUserDetails userDetails = new CustomUserDetails(principal.getId(), principal.getLoginId(), "", principal.getNickname(), principal.getEmail(), s3Uploader.getProfileImgPath(profileImage.getStoreFileName()));
             SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userDetails, "", null));
 
         }

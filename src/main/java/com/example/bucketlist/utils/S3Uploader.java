@@ -41,8 +41,8 @@ public class S3Uploader {
         amazonS3Client.deleteObject(bucket, PROFILE_IMG_DIR + profileImage.getStoreFileName());
     }
 
-    public String getProfileImgPath(ProfileImage profileImage) {
-        return amazonS3Client.getResourceUrl(bucket, PROFILE_IMG_DIR + profileImage.getStoreFileName());
+    public String getProfileImgPath(String storeFileName) {
+        return amazonS3Client.getResourceUrl(bucket, PROFILE_IMG_DIR + storeFileName);
     }
 
     public PosterImage uploadPosterImg(MultipartFile uploadPosterImage) throws IOException {

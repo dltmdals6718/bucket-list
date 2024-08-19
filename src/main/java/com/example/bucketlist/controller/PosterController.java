@@ -3,6 +3,7 @@ package com.example.bucketlist.controller;
 import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
+import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.exception.InValidInputException;
 import com.example.bucketlist.service.PosterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class PosterController {
     @GetMapping("/{posterId}")
     public String viewPoster(@PathVariable Long posterId, Model model) {
 
-        Poster poster = posterService.getPosterForView(posterId);
+        PosterDetailsResponse poster = posterService.getPosterForView(posterId);
         model.addAttribute("poster", poster);
 
         return "poster/view-poster";

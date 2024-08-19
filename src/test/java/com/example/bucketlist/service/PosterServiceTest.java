@@ -5,6 +5,7 @@ import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.domain.PosterTag;
 import com.example.bucketlist.domain.Tag;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
+import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterRepository;
 import com.example.bucketlist.repository.PosterTagRepository;
@@ -214,6 +215,40 @@ class PosterServiceTest {
                                 .anyMatch(posterTag -> posterTag.getTag().getName().equals(newTagName))
                 )
                 .isTrue();
+
+    }
+
+    @Test
+    @DisplayName("게시글 정보 조회")
+    void getPosterDetails() {
+
+        // given
+        Long posterId = poster.getId();
+
+        // when
+        PosterDetailsResponse posterDetailsResponse = posterRepository.findPosterDetailsById(posterId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        // then
+        Assertions
+                .assertThat(posterDetailsResponse.getPosterId())
+                .isEqualTo(posterId);
+
+        Assertions
+                .assertThat(posterDetailsResponse.getContent())
+                .isEqualTo(poster.getContent());
+
+        Assertions
+                .assertThat(posterDetailsResponse.getTitle())
+                .isEqualTo(poster.getTitle());
+
+        Assertions
+                .assertThat(posterDetailsResponse.getMemberId())
+                .isEqualTo(member.getId());
+
+        Assertions
+                .assertThat(posterDetailsResponse.getTags())
+                .contains(tag1.getName(), tag2.getName());
 
     }
 

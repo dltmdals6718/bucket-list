@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 profileImgPath = DefaultProfileImageUtil.getDefaultProfileImagePath(member.getProvider() + "_" + member.getProviderId());
 
         } else {
-            profileImgPath = s3Uploader.getProfileImgPath(profileImage);
+            profileImgPath = s3Uploader.getProfileImgPath(profileImage.getStoreFileName());
         }
 
         return new CustomUserDetails(member.getId(), member.getLoginId(), member.getLoginPwd(), member.getNickname(), member.getEmail(), profileImgPath);
