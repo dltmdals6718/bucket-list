@@ -6,11 +6,13 @@ import com.example.bucketlist.domain.PosterTag;
 import com.example.bucketlist.domain.Tag;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
+import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterRepository;
 import com.example.bucketlist.repository.PosterTagRepository;
 import com.example.bucketlist.repository.TagRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +20,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @SpringBootTest
@@ -51,6 +56,7 @@ class PosterServiceTest {
     public void setup() {
         member = new Member();
         member.setNickname("test member");
+        member.setEmail("test@test.com");
         memberRepository.save(member);
 
         poster = new Poster();
@@ -249,6 +255,86 @@ class PosterServiceTest {
         Assertions
                 .assertThat(posterDetailsResponse.getTags())
                 .contains(tag1.getName(), tag2.getName());
+
+    }
+
+    @Test
+    @DisplayName("전체 게시글 조회")
+    void findAllPosters() {
+
+        // given
+        String jpql = "SELECT COUNT(p) FROM Poster p WHERE isPrivate = FALSE";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        Long totalPosterCount = query.getSingleResult();
+
+        // when
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null);
+
+        List<PosterOverviewResponse> content = response.getContent();
+        PosterOverviewResponse posterOverviewResponse = content.get(0); // 기본값 최신순이기에 get(0)
+
+        //then
+        Assertions
+                .assertThat(posterOverviewResponse.getPosterId())
+                .isEqualTo(poster.getId());
+
+        Assertions
+                .assertThat(posterOverviewResponse.getTags())
+                .contains(tag1.getName(), tag2.getName());
+
+        Assertions
+                .assertThat(response.getTotalElements())
+                .isEqualTo(totalPosterCount);
+
+    }
+
+    @Test
+    @DisplayName("태그로 게시글 조회")
+    void findPosterByTags() {
+
+        // given
+        ArrayList<String> searchTags = new ArrayList<>();
+        String tag = tag1.getName();
+        searchTags.add(tag);
+
+        // when
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, searchTags);
+        List<PosterOverviewResponse> content = response.getContent();
+
+        //then
+        boolean allHaveTag = content.stream()
+                .allMatch(posterOverviewResponse -> posterOverviewResponse.getTags().contains(tag));
+
+        Assertions
+                .assertThat(allHaveTag)
+                .isTrue();
+
+        boolean containsSpecificPoster = content.stream()
+                .anyMatch(posterOverviewResponse -> posterOverviewResponse.getPosterId().equals(poster.getId()));
+
+        Assertions
+                .assertThat(containsSpecificPoster)
+                .isTrue();
+
+    }
+
+    @Test
+    @DisplayName("비공개 글은 페이징에서 제외")
+    void notIncludePrivatePoster() {
+
+        // given
+        String jpql = "SELECT COUNT(*) FROM Poster p";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        Long totalPosterCount = query.getSingleResult();
+
+        // when
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null);
+
+        //then
+        long totalElements = response.getTotalElements();
+        Assertions
+                .assertThat(totalElements)
+                .isNotEqualTo(totalPosterCount);
 
     }
 
