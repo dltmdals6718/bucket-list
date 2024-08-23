@@ -323,11 +323,16 @@ class PosterServiceTest {
     void notIncludePrivatePoster() {
 
         // given
+        Poster privatePoster = new Poster();
+        privatePoster.setIsPrivate(true);
+        privatePoster.setMember(member);
+        posterRepository.save(privatePoster);
+
+        // when
         String jpql = "SELECT COUNT(*) FROM Poster p";
         TypedQuery<Long> query = em.createQuery(jpql, Long.class);
         Long totalPosterCount = query.getSingleResult();
 
-        // when
         Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null);
 
         //then
