@@ -4,9 +4,11 @@ import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
+import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.exception.InValidInputException;
 import com.example.bucketlist.service.PosterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -106,6 +108,13 @@ public class PosterController {
         response.put("posterId", posterId);
         return ResponseEntity
                 .ok(response);
+    }
+
+    @GetMapping
+    @ResponseBody
+    public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "5") Integer size) {
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null);
+        return ResponseEntity.ok(posterOverview);
     }
 
 }

@@ -11,6 +11,7 @@ import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterRepository;
 import com.example.bucketlist.repository.PosterTagRepository;
 import com.example.bucketlist.repository.TagRepository;
+import com.example.bucketlist.utils.EscapeUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -90,6 +91,34 @@ class PosterServiceTest {
     }
 
     @Test
+    @DisplayName("게시글 생성시 이스케이프 변환")
+    void posterEscapeCreate() {
+
+        // given
+        String title = "<h1>제목</h1> <script>alert('hello')</script>";
+        String content = "태그 화이트리스트 추가 필요";
+        PosterWriteRequest posterWriteRequest = new PosterWriteRequest();
+        posterWriteRequest.setTitle(title);
+        posterWriteRequest.setContent(content);
+
+        // when
+        Long posterId = posterService.createPoster(member.getId(), posterWriteRequest);
+
+        // then
+        Poster findPoster = posterRepository.findById(posterId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        Assertions
+                .assertThat(findPoster.getTitle())
+                .isEqualTo(EscapeUtils.escapeHtml(title));
+
+        Assertions
+                .assertThat(findPoster.getContent())
+                .isEqualTo(content);
+
+    }
+
+    @Test
     @DisplayName("게시글 태그 생성")
     void posterTagCreate() {
 
@@ -130,7 +159,8 @@ class PosterServiceTest {
         posterWriteRequest.setIsPrivate(false);
 
         Set<String> tags = new HashSet<>();
-        tags.add("<script>");
+        String tag = "<script>";
+        tags.add(tag);
         posterWriteRequest.setTags(tags);
 
         // when
@@ -146,7 +176,7 @@ class PosterServiceTest {
         String escapedTag = poster.getPosterTags().get(0).getTag().getName();
         Assertions
                 .assertThat(escapedTag)
-                .isEqualTo("&lt;script&gt;");
+                .isEqualTo(EscapeUtils.escapeHtml(tag));
     }
 
     @Test

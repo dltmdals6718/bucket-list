@@ -68,7 +68,7 @@ $(document).ready(function () {
             if (tagValue) {
                 const tagHtml = `
                     <li class="d-inline-flex ps-2 me-1 my-1 border rounded bg-light-subtle">
-                        <span name="tag">${escapeHtml(tagValue)}</span>
+                        <span name="tag">${tagValue}</span>
                         <button name="delete-tag-btn" class="d-inline-flex align-items-center border border-0 bg-transparent">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-x" viewBox="0 0 16 16">
@@ -91,12 +91,3 @@ $(document).ready(function () {
 
 
 });
-
-function escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}

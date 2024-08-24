@@ -3,11 +3,14 @@ package com.example.bucketlist.service;
 import com.example.bucketlist.domain.*;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
+import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.repository.*;
 import com.example.bucketlist.utils.EscapeUtils;
 import com.example.bucketlist.utils.S3Uploader;
 import com.example.bucketlist.utils.UploadFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +46,7 @@ public class PosterService {
                 .orElseThrow(() -> new IllegalArgumentException());
 
         Poster poster = new Poster();
-        poster.setTitle(posterWriteRequest.getTitle());
+        poster.setTitle(EscapeUtils.escapeHtml(posterWriteRequest.getTitle()));
         poster.setContent(posterWriteRequest.getContent());
         poster.setMember(member);
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
@@ -91,6 +94,7 @@ public class PosterService {
 
         Poster poster = posterRepository.findById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
+        poster.setTitle(EscapeUtils.unescapeHtml(poster.getTitle()));
 
         if (!memberId.equals(poster.getMember().getId()))
             throw new AccessDeniedException("접근 권한 없음.");
@@ -106,7 +110,7 @@ public class PosterService {
         if (!memberId.equals(poster.getMember().getId()))
             throw new AccessDeniedException("접근 권한 없음.");
 
-        poster.setTitle(posterWriteRequest.getTitle());
+        poster.setTitle(EscapeUtils.escapeHtml(posterWriteRequest.getTitle()));
         poster.setContent(posterWriteRequest.getContent());
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
 
@@ -175,4 +179,15 @@ public class PosterService {
 
         return poster;
     }
+
+    public PagedModel<PosterOverviewResponse> getPosterOverview(int page, int size, List<String> searchTag) {
+
+        if (size >= 50)
+            size = 10;
+
+        Page<PosterOverviewResponse> posterOverview = posterRepository.findPosterOverview(page, size, searchTag);
+        return new PagedModel<>(posterOverview);
+    }
+
+
 }

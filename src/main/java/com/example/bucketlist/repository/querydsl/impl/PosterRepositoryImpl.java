@@ -19,6 +19,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -106,14 +107,14 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
 
         // 쿼리 빌드
         JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
-                .select(poster.id, member.id, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.content, poster.createdDate)
+                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.content, poster.createdDate)
                 .from(poster)
                 .leftJoin(member).on(member.id.eq(poster.member.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
                 .leftJoin(posterTag).on(posterTag.poster.id.eq(poster.id))
                 .leftJoin(tag).on(tag.id.eq(posterTag.tag.id))
                 .where(poster.isPrivate.isFalse())
-                .groupBy(poster.id, member.id, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.content, poster.createdDate)
+                .groupBy(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.content, poster.createdDate)
                 .offset((page - 1) * size)
                 .limit(size)
                 .orderBy(poster.id.desc());
@@ -138,9 +139,12 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
 
                     PosterOverviewResponse posterOverviewResponse = new PosterOverviewResponse();
                     posterOverviewResponse.setMemberId(tuple.get(member.id));
+                    posterOverviewResponse.setNickname(tuple.get(member.nickname));
                     posterOverviewResponse.setPosterId(tuple.get(poster.id));
                     posterOverviewResponse.setTitle(tuple.get(poster.title));
-                    posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).toString());
+
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));
 
                     String profile = tuple.get(profileImage.storeFileName);
                     String email = tuple.get(member.email);

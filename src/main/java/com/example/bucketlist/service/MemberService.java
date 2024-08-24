@@ -10,6 +10,7 @@ import com.example.bucketlist.dto.response.MemberProfileResponse;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.ProfileImageRepository;
 import com.example.bucketlist.utils.DefaultProfileImageUtil;
+import com.example.bucketlist.utils.EscapeUtils;
 import com.example.bucketlist.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -43,7 +44,7 @@ public class MemberService {
         member.setLoginId(memberSignupRequest.getLoginId());
         member.setLoginPwd(passwordEncoder.encode(memberSignupRequest.getLoginPwd()));
         member.setEmail(memberSignupRequest.getEmail());
-        member.setNickname(memberSignupRequest.getNickname());
+        member.setNickname(EscapeUtils.escapeHtml(memberSignupRequest.getNickname()));
 
         Long memberId = memberRepository.save(member).getId();
 
@@ -62,7 +63,7 @@ public class MemberService {
         MemberProfileResponse memberProfileResponse = new MemberProfileResponse();
         memberProfileResponse.setLoginId(member.getLoginId());
         memberProfileResponse.setEmail(member.getEmail());
-        memberProfileResponse.setNickname(member.getNickname());
+        memberProfileResponse.setNickname(EscapeUtils.unescapeHtml(member.getNickname()));
 
         ProfileImage profileImage = member.getProfileImage();
         if (profileImage == null) {
@@ -113,7 +114,7 @@ public class MemberService {
                 .orElseThrow(() -> new NoSuchElementException());
 
         // todo: 중복된 닉네임 정책
-        member.setNickname(profileUpdateRequest.getNickname());
+        member.setNickname(EscapeUtils.escapeHtml(profileUpdateRequest.getNickname()));
 
         if (uploadProfileImage != null) {
 
