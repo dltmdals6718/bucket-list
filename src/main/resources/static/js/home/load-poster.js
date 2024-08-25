@@ -36,19 +36,15 @@ function loadAllPosters(page) {
             // 이전 페이지 버튼 상태 설정
             if (page <= 1) {
                 $("#all-posters-prev-page-btn").attr("disabled", true);
-                $("#all-posters-prev-page-btn").addClass("border-0");
             } else {
                 $("#all-posters-prev-page-btn").removeAttr("disabled");
-                $("#all-posters-prev-page-btn").removeClass("border-0");
             }
 
             // 다음 페이지 버튼 설정
             if (page >= pageInfo.totalPages) {
                 $("#all-posters-next-page-btn").attr("disabled", true);
-                $("#all-posters-next-page-btn").addClass("border-0");
             } else {
                 $("#all-posters-next-page-btn").removeAttr("disabled");
-                $("#all-posters-next-page-btn").removeClass("border-0");
             }
 
 
