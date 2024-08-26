@@ -21,7 +21,7 @@ $(document).ready(function () {
         const formData = new FormData();
         formData.append("poster", new Blob([JSON.stringify(poster)], {type: "application/json"}));
 
-        $.ajax("/posters/write", {
+        $.ajax("/api/posters/write", {
             type: "POST",
             enctype: "multipart/form-data",
             contentType: false,

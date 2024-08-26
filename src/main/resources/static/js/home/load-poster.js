@@ -23,7 +23,7 @@ function clearAllPostersOverview() {
 function loadAllPosters(page) {
 
     // 전체 게시글
-    $.ajax(`/posters?page=${page}`, {
+    $.ajax(`/api/posters?page=${page}`, {
         type: "GET",
         dataType: "json",
         success: function (data) {

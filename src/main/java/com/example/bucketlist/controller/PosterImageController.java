@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/posters")
+@RequestMapping("/api/posters")
 public class PosterImageController {
 
     private PosterImageService posterImageService;

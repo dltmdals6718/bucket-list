@@ -21,7 +21,7 @@ $(document).ready(function () {
         const formData = new FormData();
         formData.append("poster", new Blob([JSON.stringify(poster)], {type: "application/json"}));
 
-        $.ajax("/posters/" + posterId  + "/update",  {
+        $.ajax("/api/posters/" + posterId  + "/update",  {
             type: "PUT",
             enctype: "multipart/form-data",
             contentType: false,

@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/posters")
 public class PosterController {
 
     private PosterService posterService;
@@ -30,12 +29,12 @@ public class PosterController {
         this.posterService = posterService;
     }
 
-    @GetMapping("/write")
+    @GetMapping("/posters/write")
     public String createPosterForm() {
         return "poster/create-poster";
     }
 
-    @PostMapping("/write")
+    @PostMapping("/api/posters/write")
     @ResponseBody
     public ResponseEntity<Map> createPoster(@AuthenticationPrincipal CustomUserDetails member,
                                             @RequestPart(name = "poster") PosterWriteRequest posterWriteRequest,
@@ -65,7 +64,7 @@ public class PosterController {
                 .ok(response);
     }
 
-    @GetMapping("/{posterId}")
+    @GetMapping("/posters/{posterId}")
     public String viewPoster(@PathVariable Long posterId, Model model) {
 
         PosterDetailsResponse poster = posterService.getPosterForView(posterId);
@@ -74,7 +73,7 @@ public class PosterController {
         return "poster/view-poster";
     }
 
-    @GetMapping("/{posterId}/update")
+    @GetMapping("/posters/{posterId}/update")
     public String updatePosterForm(@AuthenticationPrincipal CustomUserDetails member,
                                    @PathVariable Long posterId, Model model) {
 
@@ -84,7 +83,8 @@ public class PosterController {
         return "poster/update-poster";
     }
 
-    @PutMapping("/{posterId}/update")
+    @PutMapping("/api/posters/{posterId}/update")
+    @ResponseBody
     public ResponseEntity<Map> updatePoster(@AuthenticationPrincipal CustomUserDetails member,
                                             @PathVariable Long posterId,
                                             @RequestPart(name = "poster") PosterWriteRequest posterWriteRequest,
@@ -110,7 +110,7 @@ public class PosterController {
                 .ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/api/posters")
     @ResponseBody
     public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "5") Integer size) {
         PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null);
