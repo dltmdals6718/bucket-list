@@ -30,11 +30,24 @@ public class HomeController {
                                     @RequestParam(required = false) String keyword,
                                     Model model) {
 
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, 20, null);
+        int size = 10;
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null);
         PagedModel.PageMetadata metadata = posterOverview.getMetadata();
         System.out.println("metadata = " + metadata);
         model.addAttribute("posters", posterOverview.getContent());
-        model.addAttribute("pageInfo", posterOverview.getMetadata()); /* number, size, totalElements, totalPages */
+
+        long currentPage = posterOverview.getMetadata().number() + 1;
+        long totalPage = posterOverview.getMetadata().totalPages();
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPage", totalPage);
+
+        int blockPageSize = 10;
+        long currentPageBlock = (long) Math.ceil(currentPage / (double) blockPageSize);
+        long startPage = (currentPageBlock - 1) * blockPageSize + 1;
+        long endPage = Math.min(currentPageBlock * blockPageSize, totalPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         return "poster/view-poster-list";
     }

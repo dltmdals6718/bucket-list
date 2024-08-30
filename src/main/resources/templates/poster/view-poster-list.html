@@ -24,7 +24,8 @@
             <a class="link-dark link-underline-opacity-0 m-0" href="#" th:utext="${poster.nickname}"></a>
             <span class="m-0 text-secondary" style="font-size: 10pt" th:utext="${poster.createdDate}"></span>
             <div class="text-truncate">
-                <a class="link-dark link-underline-opacity-0" th:href="@{/posters/{id}(id = ${poster.posterId})}" th:utext="${poster.title}"></a>
+                <a class="link-dark link-underline-opacity-0" th:href="@{/posters/{id}(id = ${poster.posterId})}"
+                   th:utext="${poster.title}"></a>
             </div>
             <ul class="px-0">
                 <th:block th:each="tag : ${poster.tags}">
@@ -36,18 +37,34 @@
         </div>
     </li>
 </ul>
-<button id="prev-page-btn" class="btn border-0" th:classappend="${pageInfo.number() <= 0} ? disabled : ''">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-    </svg>
-    Previous
-</button>
-
-<button id="next-page-btn" class="btn border-0" th:classappend="${pageInfo.number() + 1 >= pageInfo.totalPages()} ? 'disabled' : ''">
-    Next
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-    </svg>
-</button>
+<div class="d-flex justify-content-between">
+    <button id="prev-page-btn" class="btn border-0" th:classappend="${currentPage <= 1} ? disabled : ''">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left"
+             viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+        </svg>
+        Previous
+    </button>
+    <ul class="pagination my-auto flex-wrap">
+        <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a th:if="${i != currentPage}"
+               th:href="@{/posters(page = ${i})}"
+               class="link-dark link-underline-opacity-0 border px-2 py-1 mx-1"
+               th:text="${i}">1</a>
+            <a th:if="${i == currentPage}"
+               class="link-dark link-underline-opacity-0 border px-2 py-1 mx-1 bg-primary-subtle"
+               th:text="${i}">1</a>
+        </li>
+    </ul>
+    <button id="next-page-btn" class="btn border-0" th:classappend="${currentPage >= totalPage} ? 'disabled' : ''">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right"
+             viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                  d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+        </svg>
+    </button>
+</div>
 </body>
 </html>
