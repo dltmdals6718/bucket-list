@@ -89,13 +89,3 @@ $(document).ready(function () {
 $(document).on('click', 'button[name="delete-tag-btn"]', function () {
     $(this).closest('li').remove();
 });
-
-
-function escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
