@@ -12,11 +12,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <th:block th:insert="~{fragments/commonHead ::commonHead}"></th:block>
-    <script src="/js/poster/poster-list-pagination.js"></script>
+    <script src="/js/poster/view-poster-list.js"></script>
     <title>Title</title>
 </head>
 <body>
 <div th:replace="~{fragments/header ::headerFragment}"></div>
+<div>
+    <input id="keyword" placeholder="키워드로 검색해보세요!">
+    <button id="search-poster-btn">검색</button>
+    <input id="tags" placeholder="태그로 검색해보세요!">
+    <ul id="tag-list" class="px-0">
+    </ul>
+</div>
 <ul>
     <li th:each="poster : ${posters}">
         <div>
@@ -49,7 +56,7 @@
     <ul class="pagination my-auto flex-wrap">
         <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}">
             <a th:if="${i != currentPage}"
-               th:href="@{/posters(page = ${i})}"
+               th:href="|/posters?page=${i}${tags != null ? '&tags=' + tags : ''}${keyword != null ? '&keyword=' + keyword : ''}|"
                class="link-dark link-underline-opacity-0 border px-2 py-1 mx-1"
                th:text="${i}">1</a>
             <a th:if="${i == currentPage}"
