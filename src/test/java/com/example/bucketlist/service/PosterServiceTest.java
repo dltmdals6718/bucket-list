@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -298,7 +299,7 @@ class PosterServiceTest {
         Long totalPosterCount = query.getSingleResult();
 
         // when
-        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null);
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null, null);
 
         List<PosterOverviewResponse> content = response.getContent();
         PosterOverviewResponse posterOverviewResponse = content.get(0); // 기본값 최신순이기에 get(0)
@@ -328,7 +329,7 @@ class PosterServiceTest {
         searchTags.add(tag);
 
         // when
-        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, searchTags);
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, searchTags, null);
         List<PosterOverviewResponse> content = response.getContent();
 
         //then
@@ -363,7 +364,7 @@ class PosterServiceTest {
         TypedQuery<Long> query = em.createQuery(jpql, Long.class);
         Long totalPosterCount = query.getSingleResult();
 
-        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null);
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null, null);
 
         //then
         long totalElements = response.getTotalElements();
@@ -372,5 +373,54 @@ class PosterServiceTest {
                 .isNotEqualTo(totalPosterCount);
 
     }
+
+    @Test
+    @DisplayName("키워드 검색")
+    void keywordSearchPoster() {
+
+        // given
+        String keyword = "검색 키워드";
+
+        Poster newPoster = new Poster();
+        newPoster.setTitle("제목");
+        newPoster.setContent("내용");
+        newPoster.setMember(member);
+        newPoster.setIsPrivate(false);
+        posterRepository.save(newPoster);
+
+        Poster titleInclueKeywordPoster = new Poster();
+        titleInclueKeywordPoster.setTitle(keyword);
+        titleInclueKeywordPoster.setContent("내용");
+        titleInclueKeywordPoster.setMember(member);
+        titleInclueKeywordPoster.setIsPrivate(false);
+        posterRepository.save(titleInclueKeywordPoster);
+
+        Poster contentIncludeKeywordPoster = new Poster();
+        contentIncludeKeywordPoster.setTitle("제목");
+        contentIncludeKeywordPoster.setContent(keyword);
+        contentIncludeKeywordPoster.setMember(member);
+        contentIncludeKeywordPoster.setIsPrivate(false);
+        posterRepository.save(contentIncludeKeywordPoster);
+
+        // when
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(1, 5, null, keyword);
+
+        // then
+        List<PosterOverviewResponse> content = posterOverview.getContent();
+        Assertions
+                .assertThat(content)
+                .allMatch(posterOverviewResponse -> {
+
+                    Poster findPoster = posterRepository.findById(posterOverviewResponse.getPosterId())
+                            .orElseThrow(() -> new IllegalArgumentException());
+
+                    if (findPoster.getTitle().contains(keyword) || findPoster.getContent().contains(keyword))
+                        return true;
+                    return false;
+                });
+
+    }
+
+
 
 }

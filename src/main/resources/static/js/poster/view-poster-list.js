@@ -31,6 +31,12 @@ $(document).ready(function () {
 
     });
 
+    // 기존 키워드 검색 노출
+    const keyword = new URL(window.location.href).searchParams.get('keyword');
+    if (keyword) {
+        $("#keyword").val(keyword);
+    }
+
     // 기존 검색 태그 노출
     let url = new URL(window.location.href);
     let tagParam = url.searchParams.get('tags');
@@ -39,9 +45,10 @@ $(document).ready(function () {
 
         tags.forEach(value => {
 
+            const tagValue = escapeHtml(value);
             const tagHtml = `
                     <li class="d-inline-flex ps-2 me-1 my-1 border rounded bg-light-subtle">
-                        <span name="tag">${value}</span>
+                        <span name="tag">${tagValue}</span>
                         <button name="delete-tag-btn" class="d-inline-flex align-items-center border border-0 bg-transparent">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-x" viewBox="0 0 16 16">
@@ -89,6 +96,7 @@ $(document).ready(function () {
     // 검색 버튼
     $("#search-poster-btn").click(function () {
 
+        // 태그 설정
         const tags = $('[name="tag"]').map(function () {
             return $(this).text();
         }).get().join(',');
@@ -96,6 +104,11 @@ $(document).ready(function () {
         let url = new URL("/posters", window.location.origin);
         if (tags)
             url.searchParams.set('tags', tags);
+
+        // 키워드 설정
+        const keyword = $("#keyword").val();
+        if (keyword)
+            url.searchParams.set('keyword', keyword);
 
         window.location.href = url.toString();
 

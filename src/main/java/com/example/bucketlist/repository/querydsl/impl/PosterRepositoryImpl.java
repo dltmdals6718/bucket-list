@@ -95,7 +95,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
     }
 
     @Override
-    public Page<PosterOverviewResponse> findPosterOverview(int page, int size, List<String> tags) {
+    public Page<PosterOverviewResponse> findPosterOverview(int page, int size, List<String> tags, String keyword) {
 
         QPoster poster = QPoster.poster;
         QMember member = QMember.member;
@@ -131,6 +131,16 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         if (tags != null && tags.size() > 0) {
             tupleJPAQuery.where(tag.name.in(tags));
             countQuery.where(tag.name.in(tags));
+        }
+
+        // 키워드 필터링
+        if (keyword != null && !keyword.isBlank()) {
+            tupleJPAQuery
+                    .where(poster.title.contains(keyword)
+                            .or(poster.content.contains(keyword)));
+            countQuery
+                    .where(poster.title.contains(keyword)
+                            .or(poster.content.contains(keyword)));
         }
 
         List<PosterOverviewResponse> overviewResponses = tupleJPAQuery.fetch()

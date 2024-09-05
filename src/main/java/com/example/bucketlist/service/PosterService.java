@@ -180,12 +180,12 @@ public class PosterService {
         return poster;
     }
 
-    public PagedModel<PosterOverviewResponse> getPosterOverview(int page, int size, List<String> searchTag) {
+    public PagedModel<PosterOverviewResponse> getPosterOverview(int page, int size, List<String> searchTag, String keyword) {
 
         if (size >= 50)
             size = 10;
 
-        Page<PosterOverviewResponse> posterOverview = posterRepository.findPosterOverview(page, size, searchTag);
+        Page<PosterOverviewResponse> posterOverview = posterRepository.findPosterOverview(page, size, searchTag, keyword);
         return new PagedModel<>(posterOverview);
     }
 

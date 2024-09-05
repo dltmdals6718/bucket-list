@@ -7,6 +7,7 @@ import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.exception.InValidInputException;
 import com.example.bucketlist.service.PosterService;
+import com.example.bucketlist.utils.EscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +31,51 @@ public class PosterController {
     @Autowired
     public PosterController(PosterService posterService) {
         this.posterService = posterService;
+    }
+
+    @GetMapping("/posters")
+    public String getPosterOverview(@RequestParam(required = false, defaultValue = "1") int page,
+                                    @RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) String tags,
+                                    Model model) {
+
+        ArrayList<String> searchTag = new ArrayList<>();
+        if (tags != null && !tags.isBlank()) {
+
+            String[] splitTags = tags.split(",");
+            String[] escapedTags = Arrays.stream(splitTags)
+                    .map(tag -> EscapeUtils.escapeHtml(tag))
+                    .toArray(String[]::new);
+
+            searchTag = new ArrayList<>(Arrays.asList(escapedTags));
+        }
+
+        int size = 10;
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, searchTag, keyword);
+        PagedModel.PageMetadata metadata = posterOverview.getMetadata();
+        model.addAttribute("posters", posterOverview.getContent());
+
+        long currentPage = metadata.number() + 1;
+        long totalPage = Math.max(metadata.totalPages(), 1); // 전체 페이지 개수가 0인 경우를 방지
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPage", totalPage);
+
+        int blockPageSize = 10;
+        long currentPageBlock = (long) Math.ceil(currentPage / (double) blockPageSize);
+        long startPage = (currentPageBlock - 1) * blockPageSize + 1;
+        long endPage = Math.min(currentPageBlock * blockPageSize, totalPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        if (tags != null && !tags.isBlank()) {
+            model.addAttribute("tags", URLEncoder.encode(tags));
+        }
+
+        if (keyword != null && !keyword.isBlank())
+            model.addAttribute("keyword", URLEncoder.encode(keyword));
+
+        return "poster/view-poster-list";
     }
 
     @GetMapping("/posters/write")
@@ -113,7 +162,7 @@ public class PosterController {
     @GetMapping("/api/posters")
     @ResponseBody
     public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "5") Integer size) {
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null);
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null, null);
         return ResponseEntity.ok(posterOverview);
     }
 
