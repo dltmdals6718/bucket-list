@@ -8,6 +8,8 @@ import com.example.bucketlist.repository.*;
 import com.example.bucketlist.utils.EscapeUtils;
 import com.example.bucketlist.utils.S3Uploader;
 import com.example.bucketlist.utils.UploadFileUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
@@ -47,7 +49,13 @@ public class PosterService {
 
         Poster poster = new Poster();
         poster.setTitle(EscapeUtils.escapeHtml(posterWriteRequest.getTitle()));
-        poster.setContent(posterWriteRequest.getContent());
+        String content = posterWriteRequest.getContent();
+        poster.setContent(content);
+
+        Document document = Jsoup.parse(content);
+        String pureContent = document.text();
+        poster.setPureContent(EscapeUtils.escapeHtml(pureContent));
+
         poster.setMember(member);
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
         posterRepository.save(poster);
@@ -111,8 +119,14 @@ public class PosterService {
             throw new AccessDeniedException("접근 권한 없음.");
 
         poster.setTitle(EscapeUtils.escapeHtml(posterWriteRequest.getTitle()));
-        poster.setContent(posterWriteRequest.getContent());
+
+        String content = posterWriteRequest.getContent();
+        poster.setContent(content);
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
+
+        Document document = Jsoup.parse(content);
+        String pureContent = document.text();
+        poster.setPureContent(EscapeUtils.escapeHtml(pureContent));
 
 
         // 삭제된 태그 처리

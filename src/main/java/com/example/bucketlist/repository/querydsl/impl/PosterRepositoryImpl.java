@@ -107,14 +107,14 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
 
         // 쿼리 빌드
         JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
-                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.content, poster.createdDate)
+                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate)
                 .from(poster)
                 .leftJoin(member).on(member.id.eq(poster.member.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
                 .leftJoin(posterTag).on(posterTag.poster.id.eq(poster.id))
                 .leftJoin(tag).on(tag.id.eq(posterTag.tag.id))
                 .where(poster.isPrivate.isFalse())
-                .groupBy(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.content, poster.createdDate)
+                .groupBy(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate)
                 .offset((page - 1) * size)
                 .limit(size)
                 .orderBy(poster.id.desc());
@@ -137,10 +137,10 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         if (keyword != null && !keyword.isBlank()) {
             tupleJPAQuery
                     .where(poster.title.contains(keyword)
-                            .or(poster.content.contains(keyword)));
+                            .or(poster.pureContent.contains(keyword)));
             countQuery
                     .where(poster.title.contains(keyword)
-                            .or(poster.content.contains(keyword)));
+                            .or(poster.pureContent.contains(keyword)));
         }
 
         List<PosterOverviewResponse> overviewResponses = tupleJPAQuery.fetch()
@@ -152,6 +152,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                     posterOverviewResponse.setNickname(tuple.get(member.nickname));
                     posterOverviewResponse.setPosterId(tuple.get(poster.id));
                     posterOverviewResponse.setTitle(tuple.get(poster.title));
+                    posterOverviewResponse.setContent(tuple.get(poster.pureContent));
 
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));

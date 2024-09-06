@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS poster (
     created_date DATETIME,
     title VARCHAR(255),
     content TEXT,
+    pure_content TEXT,
     FOREIGN KEY (member_id) REFERENCES member(id)
 );
 

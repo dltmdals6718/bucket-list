@@ -414,7 +414,7 @@ class PosterServiceTest {
                     Poster findPoster = posterRepository.findById(posterOverviewResponse.getPosterId())
                             .orElseThrow(() -> new IllegalArgumentException());
 
-                    if (findPoster.getTitle().contains(keyword) || findPoster.getContent().contains(keyword))
+                    if (findPoster.getTitle().contains(keyword) || findPoster.getPureContent().contains(keyword))
                         return true;
                     return false;
                 });

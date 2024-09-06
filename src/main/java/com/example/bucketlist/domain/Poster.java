@@ -22,6 +22,7 @@ public class Poster {
 
     private String title;
     private String content;
+    private String pureContent;
     private Boolean isPrivate;
 
     @ManyToOne

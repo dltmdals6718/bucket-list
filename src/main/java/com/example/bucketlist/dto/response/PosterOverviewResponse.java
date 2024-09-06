@@ -20,6 +20,7 @@ public class PosterOverviewResponse {
     private String profileImg;
     private String createdDate;
     private String title;
+    private String content;
     private List<String> tags;
 
 }
