@@ -47,6 +47,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         QProfileImage profileImage = QProfileImage.profileImage;
         QPosterTag posterTag = QPosterTag.posterTag;
         QTag tag = QTag.tag;
+        QPosterAchieve posterAchieve = QPosterAchieve.posterAchieve;
 
         List<String> tags = jpaQueryFactory
                 .select(tag.name)
@@ -67,10 +68,13 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                         poster.createdDate.stringValue(),
                         poster.title,
                         poster.content,
-                        Expressions.constant(tags)
+                        Expressions.constant(tags),
+                        poster.isAchieve,
+                        posterAchieve.content
                 ))
                 .from(poster)
                 .join(member).on(member.id.eq(poster.member.id))
+                .leftJoin(posterAchieve).on(posterAchieve.id.eq(poster.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
                 .where(poster.id.eq(posterId))
                 .fetchOne();

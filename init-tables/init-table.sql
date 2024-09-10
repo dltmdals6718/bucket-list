@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS poster (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     member_id BIGINT,
     is_private TINYINT(1),
+    is_achieve TINYINT(1),
     created_date DATETIME,
     title VARCHAR(255),
     content TEXT,
@@ -45,11 +46,26 @@ CREATE TABLE IF NOT EXISTS tag (
     name VARCHAR(255) NOT NULL
 );
 
-/* 게시글 삭제시 poster_tag 삭제, 태그는 다른 게시글이 사용하고 있을 수 있으니 놔둔다. */
 CREATE TABLE IF NOT EXISTS poster_tag (
     poster_id BIGINT,
     tag_id BIGINT,
     PRIMARY KEY (poster_id, tag_id),
     FOREIGN KEY (poster_id) REFERENCES poster(id),
     FOREIGN KEY (tag_id) REFERENCES tag(id)
+);
+
+CREATE TABLE IF NOT EXISTS poster_achieve (
+    id BIGINT PRIMARY KEY,
+    member_id BIGINT,
+    content TEXT,
+    FOREIGN KEY (id) REFERENCES poster(id),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);
+
+CREATE TABLE IF NOT EXISTS poster_achieve_image (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    poster_achieve_id BIGINT,
+    upload_file_name VARCHAR(255),
+    store_file_name VARCHAR(255),
+    FOREIGN KEY (poster_achieve_id) REFERENCES poster_achieve(id)
 );

@@ -24,6 +24,7 @@ public class Poster {
     private String content;
     private String pureContent;
     private Boolean isPrivate;
+    private Boolean isAchieve;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -34,5 +35,8 @@ public class Poster {
 
     @OneToMany(mappedBy = "poster")
     private List<PosterTag> posterTags = new ArrayList<>();
+
+    @OneToOne(mappedBy = "poster")
+    private PosterAchieve posterAchieve;
 
 }

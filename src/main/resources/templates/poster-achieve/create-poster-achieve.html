@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:insert="~{fragments/commonHead ::commonHead}"></th:block>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css"/>
+    <style>
+        .ck-editor__editable {
+            min-height: 300px;
+        }
+    </style>
+    <script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.0.0/"
+        }
+    }
+    </script>
+    <script type="module">
+        import {
+            ClassicEditor,
+            Essentials,
+            Bold,
+            Italic,
+            Font,
+            Paragraph,
+            Image,
+            ImageUpload,
+            ImageResizeEditing, ImageResizeHandles
+        } from 'ckeditor5';
+
+        function MyCustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new PosterAchieveUploadAdapter(loader)
+            }
+        }
+
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                plugins: [Essentials, Bold, Italic, Font, Paragraph, Image, ImageUpload, ImageResizeEditing, ImageResizeHandles, MyCustomUploadAdapterPlugin],
+                toolbar: {
+                    items: [
+                        'undo', 'redo', '|', 'bold', 'italic', '|',
+                        'fontSize', 'fontColor', 'fontBackgroundColor', '|', 'imageUpload'
+                    ]
+                }
+            })
+            .then(newEditor => {
+                window.editor = newEditor;
+            })
+            .catch( /* ... */);
+    </script>
+    <script src="/js/poster-achieve/poster-achieve-upload-adapter.js"></script>
+    <script src="/js/poster-achieve/create-poster-achieve.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<div class="my-3 mx-3 px-2">
+    <div id="editor"></div>
+    <div id="content"></div>
+    <div id="posterImages"></div>
+    <div class="text-end my-3">
+        <button id="createPosterAchieveBtn" class="btn btn-primary mr-5" th:data-poster-id="${posterId}">완료</button>
+    </div>
+</div>
+</body>
+</html>

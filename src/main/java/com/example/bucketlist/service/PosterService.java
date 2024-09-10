@@ -58,6 +58,7 @@ public class PosterService {
 
         poster.setMember(member);
         poster.setIsPrivate(posterWriteRequest.getIsPrivate());
+        poster.setIsAchieve(false);
         posterRepository.save(poster);
 
         for (String name : posterWriteRequest.getTags()) {

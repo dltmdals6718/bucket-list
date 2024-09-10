@@ -2,6 +2,7 @@ package com.example.bucketlist.utils;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.example.bucketlist.domain.PosterAchieveImage;
 import com.example.bucketlist.domain.PosterImage;
 import com.example.bucketlist.domain.ProfileImage;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class S3Uploader {
 
     private String PROFILE_IMG_DIR = "profile/";
     private String POSTER_IMG_DIR = "poster/";
+    private String POSTER_ACHIEVE_IMG_DIR = "posterAchieve/";
 
     public ProfileImage uploadProfileImg(MultipartFile uploadProfileImage) throws IOException {
         ProfileImage profileImage = new ProfileImage();
@@ -64,6 +66,26 @@ public class S3Uploader {
 
     public String getPosterImgPath(PosterImage posterImage) {
         return amazonS3Client.getResourceUrl(bucket, POSTER_IMG_DIR + posterImage.getStoreFileName());
+    }
+
+    public PosterAchieveImage uploadPosterAchieveImg(MultipartFile uploadPosterAchieveImage) throws IOException {
+        PosterAchieveImage posterAchieveImage = new PosterAchieveImage();
+        posterAchieveImage.setUploadFileName(uploadPosterAchieveImage.getOriginalFilename());
+        posterAchieveImage.setStoreFileName(UUID.randomUUID().toString());
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(uploadPosterAchieveImage.getContentType());
+        metadata.setContentLength(uploadPosterAchieveImage.getSize());
+        amazonS3Client.putObject(bucket, POSTER_ACHIEVE_IMG_DIR + posterAchieveImage.getStoreFileName(), uploadPosterAchieveImage.getInputStream(), metadata);
+        return posterAchieveImage;
+    }
+
+    public void deletePosterAchieveImg(PosterAchieveImage posterAchieveImage) {
+        amazonS3Client.deleteObject(bucket, POSTER_ACHIEVE_IMG_DIR + posterAchieveImage.getStoreFileName());
+    }
+
+    public String getPosterAchieveImgPath(PosterAchieveImage posterAchieveImage) {
+        return amazonS3Client.getResourceUrl(bucket, POSTER_ACHIEVE_IMG_DIR + posterAchieveImage.getStoreFileName());
     }
 
 

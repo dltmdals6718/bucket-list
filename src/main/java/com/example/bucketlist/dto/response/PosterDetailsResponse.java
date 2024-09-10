@@ -25,9 +25,11 @@ public class PosterDetailsResponse {
     private String title;
     private String content;
     private List<String> tags;
+    private Boolean isAchieve;
+    private String posterAchieveContent;
 
     @QueryProjection
-    public PosterDetailsResponse(Long posterId, Long memberId, String email, String provider, String providerId, String nickname, String profileImg, String createdDate, String title, String content, List<String> tags) {
+    public PosterDetailsResponse(Long posterId, Long memberId, String email, String provider, String providerId, String nickname, String profileImg, String createdDate, String title, String content, List<String> tags, Boolean isAchieve, String posterAchieveContent) {
         this.posterId = posterId;
         this.memberId = memberId;
         this.email = email;
@@ -39,5 +41,7 @@ public class PosterDetailsResponse {
         this.title = title;
         this.content = content;
         this.tags = tags;
+        this.isAchieve = isAchieve;
+        this.posterAchieveContent = posterAchieveContent;
     }
 }
