@@ -18,6 +18,9 @@
 <body>
 <div th:replace="~{fragments/header ::headerFragment}"></div>
 <div>
+    <button id="all-status-btn">전체</button>
+    <button id="unachieved-status-btn">미완료</button>
+    <button id="achieved-status-btn">완료됨</button>
     <input id="keyword" placeholder="키워드로 검색해보세요!">
     <button id="search-poster-btn">검색</button>
     <input id="tags" placeholder="태그로 검색해보세요!">
@@ -89,7 +92,7 @@
     <ul class="pagination my-auto flex-wrap">
         <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}">
             <a th:if="${i != currentPage}"
-               th:href="|/posters?page=${i}${tags != null ? '&tags=' + tags : ''}${keyword != null ? '&keyword=' + keyword : ''}|"
+               th:href="|/posters?page=${i}${tags != null ? '&tags=' + tags : ''}${keyword != null ? '&keyword=' + keyword : ''}${sort != null ? '&sort=' + sort : ''}${status != null ? '&status=' + status : ''}|"
                class="link-dark link-underline-opacity-0 border px-2 py-1 mx-1"
                th:text="${i}">1</a>
             <a th:if="${i == currentPage}"

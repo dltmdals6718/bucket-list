@@ -299,7 +299,7 @@ class PosterServiceTest {
         Long totalPosterCount = query.getSingleResult();
 
         // when
-        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null, null);
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null, null, null, null);
 
         List<PosterOverviewResponse> content = response.getContent();
         PosterOverviewResponse posterOverviewResponse = content.get(0); // 기본값 최신순이기에 get(0)
@@ -329,7 +329,7 @@ class PosterServiceTest {
         searchTags.add(tag);
 
         // when
-        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, searchTags, null);
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, searchTags, null, null, null);
         List<PosterOverviewResponse> content = response.getContent();
 
         //then
@@ -364,7 +364,7 @@ class PosterServiceTest {
         TypedQuery<Long> query = em.createQuery(jpql, Long.class);
         Long totalPosterCount = query.getSingleResult();
 
-        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null, null);
+        Page<PosterOverviewResponse> response = posterRepository.findPosterOverview(1, 10, null, null, null, null);
 
         //then
         long totalElements = response.getTotalElements();
@@ -403,7 +403,7 @@ class PosterServiceTest {
         posterRepository.save(contentIncludeKeywordPoster);
 
         // when
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(1, 5, null, keyword);
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(1, 5, null, keyword, null, null);
 
         // then
         List<PosterOverviewResponse> content = posterOverview.getContent();
