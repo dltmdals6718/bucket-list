@@ -16,7 +16,16 @@
         <img th:src="${poster.profileImg}" alt="프로필 이미지" class="rounded-circle me-2" width="48px" height="48px">
         <div>
             <p class="m-0" th:utext="${poster.nickname}">작성자 이름</p>
-            <p class="m-0 text-secondary" th:text="${poster.createdDate}" style="font-size: 10pt">날짜</p>
+            <div class="d-flex align-items-center">
+                <p class="m-0 text-secondary" th:text="${poster.createdDate}" style="font-size: 10pt">날짜</p>
+                <div th:if="${poster.isAchieve == true}" class="d-flex align-items-center ms-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                         height="16" fill="#55abed" class="bi bi-patch-check-fill" viewBox="0 0 16 16">
+                        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                    </svg>
+                    <span class="fw-bold" style="color: #55abed;">완료된 버킷리스트</span>
+                </div>
+            </div>
         </div>
         <div class="ms-auto mt-auto text-end" sec:authorize="isAuthenticated()">
             <a class="link-secondary link-underline-opacity-0"

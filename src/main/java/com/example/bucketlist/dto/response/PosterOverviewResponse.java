@@ -22,5 +22,6 @@ public class PosterOverviewResponse {
     private String title;
     private String content;
     private List<String> tags;
+    private Boolean isAchieve;
 
 }
