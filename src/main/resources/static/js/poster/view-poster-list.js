@@ -1,5 +1,27 @@
 $(document).ready(function () {
 
+    // 전체 상태 버튼
+    $("#all-status-btn").click(function () {
+        let url = new URL(window.location.href);
+        url.searchParams.delete("status");
+        window.location.href = url.toString();
+    });
+
+    // 미완료 상태 버튼
+    $("#unachieved-status-btn").click(function () {
+        let url = new URL(window.location.href);
+        url.searchParams.set("status", "unachieved");
+        window.location.href = url.toString();
+    });
+
+    // 완료 상태 버튼
+    $("#achieved-status-btn").click(function () {
+        let url = new URL(window.location.href);
+        url.searchParams.set("status", "achieved");
+        window.location.href = url.toString();
+    });
+
+
     // 다음 페이지
     $("#next-page-btn").click(function () {
 

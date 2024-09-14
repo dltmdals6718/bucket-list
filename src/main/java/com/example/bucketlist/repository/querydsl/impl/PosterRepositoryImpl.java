@@ -99,7 +99,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
     }
 
     @Override
-    public Page<PosterOverviewResponse> findPosterOverview(int page, int size, List<String> tags, String keyword) {
+    public Page<PosterOverviewResponse> findPosterOverview(int page, int size, List<String> tags, String keyword, String sort, String status) {
 
         QPoster poster = QPoster.poster;
         QMember member = QMember.member;
@@ -120,8 +120,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                 .where(poster.isPrivate.isFalse())
                 .groupBy(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve)
                 .offset((page - 1) * size)
-                .limit(size)
-                .orderBy(poster.id.desc());
+                .limit(size);
 
         // 카운트 쿼리
         JPAQuery<Long> countQuery = jpaQueryFactory
@@ -145,6 +144,33 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
             countQuery
                     .where(poster.title.contains(keyword)
                             .or(poster.pureContent.contains(keyword)));
+        }
+
+
+        // 상태 필터링
+        if (status != null) {
+            if (status.equals("achieved")) {
+                tupleJPAQuery
+                        .where(poster.isAchieve.isTrue());
+                countQuery
+                        .where(poster.isAchieve.isTrue());
+            } else if (status.equals("unachieved")) {
+                tupleJPAQuery
+                        .where(poster.isAchieve.isFalse());
+                countQuery
+                        .where(poster.isAchieve.isFalse());
+            }
+        }
+
+        // 정렬
+        if (sort != null) {
+            if (sort.equals("id")) {
+                tupleJPAQuery.orderBy(poster.id.desc());
+            } else if (sort.equals("temp")) {
+                tupleJPAQuery.orderBy(poster.id.desc());
+            }
+        } else {
+            tupleJPAQuery.orderBy(poster.id.desc());
         }
 
         List<PosterOverviewResponse> overviewResponses = tupleJPAQuery.fetch()

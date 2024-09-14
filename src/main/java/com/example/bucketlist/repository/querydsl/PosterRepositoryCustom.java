@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface PosterRepositoryCustom {
 
     Optional<PosterDetailsResponse> findPosterDetailsById(Long posterId);
-    Page<PosterOverviewResponse> findPosterOverview(int page, int size, List<String> tags, String keyword);
+    Page<PosterOverviewResponse> findPosterOverview(int page, int size, List<String> tags, String keyword, String sort, String status);
 }

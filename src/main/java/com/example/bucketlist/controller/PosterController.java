@@ -37,6 +37,8 @@ public class PosterController {
     public String getPosterOverview(@RequestParam(required = false, defaultValue = "1") int page,
                                     @RequestParam(required = false) String keyword,
                                     @RequestParam(required = false) String tags,
+                                    @RequestParam(required = false) String sort,
+                                    @RequestParam(required = false) String status,
                                     Model model) {
 
         ArrayList<String> searchTag = new ArrayList<>();
@@ -51,7 +53,7 @@ public class PosterController {
         }
 
         int size = 10;
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, searchTag, keyword);
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, searchTag, keyword, sort, status);
         PagedModel.PageMetadata metadata = posterOverview.getMetadata();
         model.addAttribute("posters", posterOverview.getContent());
 
@@ -68,12 +70,17 @@ public class PosterController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        if (tags != null && !tags.isBlank()) {
+        if (tags != null && !tags.isBlank())
             model.addAttribute("tags", URLEncoder.encode(tags));
-        }
 
         if (keyword != null && !keyword.isBlank())
             model.addAttribute("keyword", URLEncoder.encode(keyword));
+
+        if (sort != null && !sort.isBlank())
+            model.addAttribute("sort", URLEncoder.encode(sort));
+
+        if (status != null && !status.isBlank())
+            model.addAttribute("status", URLEncoder.encode(status));
 
         return "poster/view-poster-list";
     }
@@ -161,8 +168,9 @@ public class PosterController {
 
     @GetMapping("/api/posters")
     @ResponseBody
-    public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "5") Integer size) {
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null, null);
+    public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page,
+                                                        @RequestParam(defaultValue = "5") Integer size) {
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null, null, null, null);
         return ResponseEntity.ok(posterOverview);
     }
 
