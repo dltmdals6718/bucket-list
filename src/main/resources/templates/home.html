@@ -11,8 +11,8 @@
 <body>
 <header th:replace="~{fragments/header :: headerFragment}"></header>
 <div class="container">
-    <div class="row">
-        <div class="col-sm border">
+    <div class="row justify-content-center">
+        <div class="col-sm" style="max-width: 350px;">
             <div class="text-center">
                 <a href="/posters">전체 게시글</a>
             </div>
@@ -28,11 +28,42 @@
                     </svg>
                 </button>
             </div>
-            <ul id="all-posters-overview">
+            <ul id="all-posters-overview" class="list-group list-group-flush">
             </ul>
         </div>
-        <div class="col-sm border">
-            <h5 class="text-center">col</h5>
+        <div class="col-sm" style="max-width: 350px;">
+            <div class="text-center">
+                <a href="#">임시 게시글</a>
+            </div>
+            <div class="btn-group btn-group-sm d-flex justify-content-end" role="group" aria-label="Small button group">
+                <button class="btn border-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+                    </svg>
+                </button>
+                <button class="btn border-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+                    </svg>
+                </button>
+            </div>
+            <ul>
+                <li>
+                    <div>
+                        <div class="d-flex">
+                            <div>
+                                <img class="rounded-circle" src="" width="20" height="20">
+                            </div>
+                            <div class="text-truncate" style="max-width: 150px;">
+                                <a class="link-dark link-underline-opacity-0 m-0" href="#">닉네임</a>
+                            </div>
+                        </div>
+                        <div class="text-truncate">
+                            <a class="link-dark link-underline-opacity-0" href="#">제목</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
