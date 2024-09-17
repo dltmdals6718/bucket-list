@@ -43,7 +43,8 @@
                 <div class="d-flex">
                     <div class="text-truncate">
                         <a class="link-dark link-underline-opacity-0 fw-semibold"
-                           th:href="@{/posters/{id}(id = ${poster.posterId})}" th:utext="${poster.title}">제목</a>
+                           th:href="|/posters/${poster.posterId}?page=${currentPage}${tags != null ? '&tags=' + tags : ''}${keyword != null ? '&keyword=' + keyword : ''}${sort != null ? '&sort=' + sort : ''}${status != null ? '&status=' + status : ''}|"
+                           th:utext="${poster.title}">제목</a>
                     </div>
                     <div th:if="${poster.isAchieve == true}" class="d-flex align-items-center ms-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16"
@@ -53,7 +54,8 @@
                     </div>
                 </div>
                 <div class="text-truncate">
-                    <a class="link-dark link-underline-opacity-0" th:href="@{/posters/{id}(id = ${poster.posterId})}"
+                    <a class="link-dark link-underline-opacity-0"
+                       th:href="|/posters/${poster.posterId}?page=${currentPage}${tags != null ? '&tags=' + tags : ''}${keyword != null ? '&keyword=' + keyword : ''}${sort != null ? '&sort=' + sort : ''}${status != null ? '&status=' + status : ''}|"
                        style="font-size: 10pt"
                        th:utext="${poster.content}"></a>
                 </div>

@@ -169,8 +169,25 @@ public class PosterController {
     @GetMapping("/api/posters")
     @ResponseBody
     public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page,
-                                                        @RequestParam(defaultValue = "5") Integer size) {
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null, null, null, null);
+                                                        @RequestParam(defaultValue = "10") Integer size,
+                                                        @RequestParam(required = false) String keyword,
+                                                        @RequestParam(required = false) String tags,
+                                                        @RequestParam(required = false) String sort,
+                                                        @RequestParam(required = false) String status) {
+
+        ArrayList<String> searchTag = new ArrayList<>();
+        if (tags != null && !tags.isBlank()) {
+
+            String[] splitTags = tags.split(",");
+            String[] escapedTags = Arrays.stream(splitTags)
+                    .map(tag -> EscapeUtils.escapeHtml(tag))
+                    .toArray(String[]::new);
+
+            searchTag = new ArrayList<>(Arrays.asList(escapedTags));
+        }
+
+
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, searchTag, keyword, sort, status);
         return ResponseEntity.ok(posterOverview);
     }
 
