@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <th:block th:insert="~{fragments/commonHead.html ::commonHead}"></th:block>
-    <script src="/js/home/load-poster.js"></script>
     <title>Title</title>
 </head>
 <body>
@@ -16,19 +15,17 @@
             <div class="text-center">
                 <a href="/posters">전체 게시글</a>
             </div>
-            <div class="btn-group btn-group-sm d-flex justify-content-end" role="group" aria-label="Small button group">
-                <button id="all-posters-prev-page-btn" class="btn border-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-                        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
-                    </svg>
-                </button>
-                <button id="all-posters-next-page-btn" class="btn border-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
-                        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-                    </svg>
-                </button>
-            </div>
-            <ul id="all-posters-overview">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="poster : ${allPosters}">
+                    <div>
+                        <img th:src="${poster.profileImg}" width="20" height="20">
+                        <a class="link-dark link-underline-opacity-0 m-0" href="#" th:utext="${poster.nickname}">닉네임</a>
+                        <span class="m-0 text-secondary" style="font-size: 10pt" th:utext="${poster.createdDate}">날짜</span>
+                        <div>
+                            <a class="link-dark link-underline-opacity-0" th:href="@{/posters/{id}(id=${poster.posterId})}" th:utext="${poster.title}">제목</a>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </div>
         <div class="col-sm border">
