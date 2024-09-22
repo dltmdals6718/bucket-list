@@ -168,9 +168,19 @@ public class PosterController {
 
     @GetMapping("/api/posters")
     @ResponseBody
-    public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page,
-                                                        @RequestParam(defaultValue = "5") Integer size) {
-        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, null, null, null, null);
+    public ResponseEntity<PagedModel> getPosterOverview(@AuthenticationPrincipal CustomUserDetails member,
+                                                        @RequestParam(defaultValue = "1") Integer page,
+                                                        @RequestParam(defaultValue = "5") Integer size,
+                                                        @RequestParam(required = false) Long memberId) {
+
+        PagedModel<PosterOverviewResponse> posterOverview;
+        if (member == null) // 비로그인
+            posterOverview = posterService.findPosterOverviewByMemberId(memberId, page, size, false);
+        else if (memberId == null) // 마이페이지에서 자신 게시글 조회
+            posterOverview = posterService.findPosterOverviewByMemberId(member.getId(), page, size, true);
+        else // 타 회원 게시글 보기
+            posterOverview = posterService.findPosterOverviewByMemberId(memberId, page, size, false);
+
         return ResponseEntity.ok(posterOverview);
     }
 

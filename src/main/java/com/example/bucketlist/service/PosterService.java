@@ -204,5 +204,14 @@ public class PosterService {
         return new PagedModel<>(posterOverview);
     }
 
+    public PagedModel<PosterOverviewResponse> findPosterOverviewByMemberId(Long memberId, int page, int size, boolean includePrivate) {
+
+        if (size >= 50)
+            size = 10;
+
+        Page<PosterOverviewResponse> posterOverview = posterRepository.findPosterOverviewByMemberId(memberId, page, size, includePrivate);
+        return new PagedModel<>(posterOverview);
+    }
+
 
 }

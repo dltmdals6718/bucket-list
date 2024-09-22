@@ -217,4 +217,89 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
 
         return PageableExecutionUtils.getPage(overviewResponses, pageable, countQuery::fetchOne);
     }
+
+    @Override
+    public Page<PosterOverviewResponse> findPosterOverviewByMemberId(Long memberId, int page, int size, boolean includePrivate) {
+
+        QPoster poster = QPoster.poster;
+        QMember member = QMember.member;
+        QProfileImage profileImage = QProfileImage.profileImage;
+        QPosterTag posterTag = QPosterTag.posterTag;
+        QTag tag = QTag.tag;
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        // 쿼리 빌드
+        JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
+                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve)
+                .from(poster)
+                .leftJoin(member).on(member.id.eq(poster.member.id))
+                .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
+                .leftJoin(posterTag).on(posterTag.poster.id.eq(poster.id))
+                .leftJoin(tag).on(tag.id.eq(posterTag.tag.id))
+                .where(member.id.eq(memberId))
+                .groupBy(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve)
+                .orderBy(poster.id.desc())
+                .offset((page - 1) * size)
+                .limit(size);
+
+        // 카운트 쿼리
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(poster.id.countDistinct())
+                .from(poster)
+                .leftJoin(member).on(member.id.eq(poster.member.id))
+                .where(member.id.eq(memberId));
+
+        // 비공개 게시글 포함 여부
+        if (!includePrivate) {
+            tupleJPAQuery.where(poster.isPrivate.isFalse());
+            countQuery.where(poster.isPrivate.isFalse());
+        }
+
+        List<PosterOverviewResponse> overviewResponses = tupleJPAQuery.fetch()
+                .stream()
+                .map(tuple -> {
+
+                    PosterOverviewResponse posterOverviewResponse = new PosterOverviewResponse();
+                    posterOverviewResponse.setMemberId(tuple.get(member.id));
+                    posterOverviewResponse.setNickname(tuple.get(member.nickname));
+                    posterOverviewResponse.setPosterId(tuple.get(poster.id));
+                    posterOverviewResponse.setTitle(tuple.get(poster.title));
+                    posterOverviewResponse.setContent(tuple.get(poster.pureContent));
+                    posterOverviewResponse.setIsAchieve(tuple.get(poster.isAchieve));
+
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));
+
+                    String profile = tuple.get(profileImage.storeFileName);
+                    String email = tuple.get(member.email);
+                    String provider = tuple.get(member.provider);
+                    String providerId = tuple.get(member.providerId);
+
+                    if (profile == null) {
+
+                        if (email == null)
+                            posterOverviewResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(provider + "_" + providerId));
+                        else
+                            posterOverviewResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(email));
+
+                    } else {
+                        posterOverviewResponse.setProfileImg(s3Uploader.getProfileImgPath(profile));
+                    }
+
+                    List<String> tagNamesList = jpaQueryFactory
+                            .select(tag.name)
+                            .from(posterTag)
+                            .join(posterTag.tag, tag)
+                            .where(posterTag.poster.id.eq(tuple.get(poster.id)))
+                            .fetch();
+                    posterOverviewResponse.setTags(tagNamesList);
+                    return posterOverviewResponse;
+                })
+                .collect(Collectors.toList());
+
+        return PageableExecutionUtils.getPage(overviewResponses, pageable, countQuery::fetchOne);
+
+
+    }
 }
