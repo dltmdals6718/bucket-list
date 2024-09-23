@@ -1,4 +1,7 @@
 let page = new URL(window.location.href).searchParams.get('page');
+if (!page)
+    page = 1;
+
 $(document).ready(function () {
 
     // 게시글 목록 호출
