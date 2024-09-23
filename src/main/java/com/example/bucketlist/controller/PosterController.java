@@ -6,6 +6,7 @@ import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.exception.InValidInputException;
+import com.example.bucketlist.service.PosterLikeService;
 import com.example.bucketlist.service.PosterService;
 import com.example.bucketlist.utils.EscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.util.Map;
 @Controller
 public class PosterController {
 
-    private PosterService posterService;
+    private final PosterService posterService;
 
     @Autowired
     public PosterController(PosterService posterService) {
@@ -168,10 +169,35 @@ public class PosterController {
 
     @GetMapping("/api/posters")
     @ResponseBody
-    public ResponseEntity<PagedModel> getPosterOverview(@AuthenticationPrincipal CustomUserDetails member,
-                                                        @RequestParam(defaultValue = "1") Integer page,
-                                                        @RequestParam(defaultValue = "5") Integer size,
-                                                        @RequestParam(required = false) Long memberId) {
+    public ResponseEntity<PagedModel> getPosterOverview(@RequestParam(defaultValue = "1") Integer page,
+                                                        @RequestParam(defaultValue = "10") Integer size,
+                                                        @RequestParam(required = false) String keyword,
+                                                        @RequestParam(required = false) String tags,
+                                                        @RequestParam(required = false) String sort,
+                                                        @RequestParam(required = false) String status) {
+
+        ArrayList<String> searchTag = new ArrayList<>();
+        if (tags != null && !tags.isBlank()) {
+
+            String[] splitTags = tags.split(",");
+            String[] escapedTags = Arrays.stream(splitTags)
+                    .map(tag -> EscapeUtils.escapeHtml(tag))
+                    .toArray(String[]::new);
+
+            searchTag = new ArrayList<>(Arrays.asList(escapedTags));
+        }
+
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.getPosterOverview(page, size, searchTag, keyword, sort, status);
+
+        return ResponseEntity.ok(posterOverview);
+    }
+
+    @GetMapping("/api/write-posters")
+    @ResponseBody
+    public ResponseEntity<PagedModel> getWritePosterOverview(@AuthenticationPrincipal CustomUserDetails member,
+                                                             @RequestParam(defaultValue = "1") Integer page,
+                                                             @RequestParam(defaultValue = "5") Integer size,
+                                                             @RequestParam(required = false) Long memberId) {
 
         PagedModel<PosterOverviewResponse> posterOverview;
         if (member == null) // 비로그인

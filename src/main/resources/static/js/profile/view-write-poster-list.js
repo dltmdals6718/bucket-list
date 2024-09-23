@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 function loadWritePosterOverview(page) {
 
-    $.ajax(`/api/posters?page=${page}`, {
+    $.ajax(`/api/write-posters?page=${page}`, {
         type: "GET",
         dataType: "json",
         success: function (data) {
