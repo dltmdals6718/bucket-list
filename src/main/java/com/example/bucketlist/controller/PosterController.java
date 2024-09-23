@@ -6,7 +6,6 @@ import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.exception.InValidInputException;
-import com.example.bucketlist.service.PosterLikeService;
 import com.example.bucketlist.service.PosterService;
 import com.example.bucketlist.utils.EscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
