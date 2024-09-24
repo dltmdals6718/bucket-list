@@ -1,6 +1,6 @@
 package com.example.bucketlist.exception;
 
-import org.springframework.security.access.AccessDeniedException;
+import com.example.bucketlist.exception.authentication.ForbiddenException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,10 +15,10 @@ public class GlobalMvcExceptionHandler {
         return modelAndView;
     }
 
-    @ExceptionHandler({AccessDeniedException.class})
-    public ModelAndView accessDeniedException(AccessDeniedException ex) {
+    @ExceptionHandler({ForbiddenException.class})
+    public ModelAndView forbiddenException(ForbiddenException ex) {
         ModelAndView modelAndView = new ModelAndView("error/403");
-        modelAndView.addObject("message", "접근 권한이 없습니다.");
+        modelAndView.addObject("message", ex.getMessage());
         return modelAndView;
     }
 

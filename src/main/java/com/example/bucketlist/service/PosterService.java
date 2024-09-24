@@ -4,6 +4,8 @@ import com.example.bucketlist.domain.*;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.dto.response.PosterOverviewResponse;
+import com.example.bucketlist.exception.ErrorCode;
+import com.example.bucketlist.exception.authentication.ForbiddenException;
 import com.example.bucketlist.repository.*;
 import com.example.bucketlist.utils.EscapeUtils;
 import com.example.bucketlist.utils.S3Uploader;
@@ -13,7 +15,6 @@ import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,7 +107,7 @@ public class PosterService {
         poster.setTitle(EscapeUtils.unescapeHtml(poster.getTitle()));
 
         if (!memberId.equals(poster.getMember().getId()))
-            throw new AccessDeniedException("접근 권한 없음.");
+            throw new ForbiddenException(ErrorCode.FORBIDDEN);
 
         return poster;
     }
@@ -117,7 +118,7 @@ public class PosterService {
         Poster poster = posterRepository.findById(posterId)
                 .orElseThrow(() -> new IllegalArgumentException());
         if (!memberId.equals(poster.getMember().getId()))
-            throw new AccessDeniedException("접근 권한 없음.");
+            throw new ForbiddenException(ErrorCode.FORBIDDEN);
 
         poster.setTitle(EscapeUtils.escapeHtml(posterWriteRequest.getTitle()));
 

@@ -4,12 +4,13 @@ import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.domain.PosterAchieve;
 import com.example.bucketlist.dto.request.PosterAchieveRequest;
+import com.example.bucketlist.exception.ErrorCode;
+import com.example.bucketlist.exception.authentication.ForbiddenException;
 import com.example.bucketlist.repository.PosterAchieveImageRepository;
 import com.example.bucketlist.repository.PosterAchieveRepository;
 import com.example.bucketlist.repository.PosterRepository;
 import com.example.bucketlist.utils.UploadFileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ public class PosterAchieveService {
 
         Member member = poster.getMember();
         if (!member.getId().equals(memberId))
-            throw new AccessDeniedException("작성자 미일치");
+            throw new ForbiddenException(ErrorCode.FORBIDDEN);
 
         PosterAchieve posterAchieve = new PosterAchieve();
         posterAchieve.setContent(posterAchieveRequest.getContent());
