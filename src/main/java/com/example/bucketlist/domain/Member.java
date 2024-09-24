@@ -37,4 +37,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<PosterAchieve> posterAchieves = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<PosterLike> posterLikes = new ArrayList<>();
+
 }

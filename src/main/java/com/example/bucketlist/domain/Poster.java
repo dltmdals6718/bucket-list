@@ -39,4 +39,7 @@ public class Poster {
     @OneToOne(mappedBy = "poster")
     private PosterAchieve posterAchieve;
 
+    @OneToMany(mappedBy = "poster")
+    private List<PosterLike> posterLikes = new ArrayList<>();
+
 }

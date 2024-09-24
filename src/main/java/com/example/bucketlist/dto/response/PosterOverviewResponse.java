@@ -23,5 +23,6 @@ public class PosterOverviewResponse {
     private String content;
     private List<String> tags;
     private Boolean isAchieve;
+    private Long likeCnt;
 
 }

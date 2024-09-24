@@ -2,7 +2,9 @@ package com.example.bucketlist.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -44,5 +46,41 @@ public class GlobalApiExceptionHandler {
                 .badRequest()
                 .body(map);
     }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<String> authenticationException(AccessDeniedException ex) {
+
+        String message = ex.getMessage();
+        if (message.equals(ErrorCode.UNAUTHENTICATION.getMessage())) {
+            return ResponseEntity
+                    .status(ErrorCode.UNAUTHENTICATION.getHttpStatus())
+                    .body("로그인이 필요합니다.");
+        } else if (message.equals("권한이 없습니다.")) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("권한이 없습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("알 수 없는 인증 에러");
+        }
+    }
+
+    @ExceptionHandler({UnauthenticationException.class})
+    public ResponseEntity<String> unauthenticationException(UnauthenticationException ex) {
+        return ResponseEntity
+                .status(ex.getErrorCode().getHttpStatus())
+                .body(ex.getErrorCode().getMessage());
+    }
+
+    @ExceptionHandler({DuplicatePosterLikeException.class})
+    public ResponseEntity<String> duplicatePosterLikeException(DuplicatePosterLikeException ex) {
+        return ResponseEntity
+                .status(ex.getErrorCode().getHttpStatus())
+                .body(ex.getErrorCode().getMessage());
+    }
+
+
+
+
+
 
 }

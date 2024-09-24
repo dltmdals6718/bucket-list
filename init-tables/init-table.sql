@@ -69,3 +69,12 @@ CREATE TABLE IF NOT EXISTS poster_achieve_image (
     store_file_name VARCHAR(255),
     FOREIGN KEY (poster_achieve_id) REFERENCES poster_achieve(id)
 );
+
+CREATE TABLE IF NOT EXISTS poster_like (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    poster_id BIGINT,
+    member_id BIGINT,
+    FOREIGN KEY (poster_id) REFERENCES poster(id),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);
+

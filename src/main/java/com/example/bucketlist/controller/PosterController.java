@@ -5,7 +5,10 @@ import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.dto.request.PosterWriteRequest;
 import com.example.bucketlist.dto.response.PosterDetailsResponse;
 import com.example.bucketlist.dto.response.PosterOverviewResponse;
+import com.example.bucketlist.exception.ErrorCode;
 import com.example.bucketlist.exception.InValidInputException;
+import com.example.bucketlist.exception.UnauthenticationException;
+import com.example.bucketlist.service.PosterLikeService;
 import com.example.bucketlist.service.PosterService;
 import com.example.bucketlist.utils.EscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +30,12 @@ import java.util.Map;
 public class PosterController {
 
     private final PosterService posterService;
+    private final PosterLikeService posterLikeService;
 
     @Autowired
-    public PosterController(PosterService posterService) {
+    public PosterController(PosterService posterService, PosterLikeService posterLikeService) {
         this.posterService = posterService;
+        this.posterLikeService = posterLikeService;
     }
 
     @GetMapping("/posters")
@@ -207,6 +212,22 @@ public class PosterController {
             posterOverview = posterService.findPosterOverviewByMemberId(memberId, page, size, false);
 
         return ResponseEntity.ok(posterOverview);
+    }
+
+    @PostMapping("/api/posters/{posterId}/like")
+    @ResponseBody
+    public ResponseEntity addPosterLike(@AuthenticationPrincipal CustomUserDetails member,
+                                        @PathVariable Long posterId) {
+
+        if (member == null)
+            throw new UnauthenticationException(ErrorCode.UNAUTHENTICATION);
+
+        Long memberId = member.getId();
+        posterLikeService.addPosterLike(posterId, memberId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 }
