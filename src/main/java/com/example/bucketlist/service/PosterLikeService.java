@@ -3,12 +3,15 @@ package com.example.bucketlist.service;
 import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.domain.PosterLike;
+import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.exception.DuplicatePosterLikeException;
 import com.example.bucketlist.exception.ErrorCode;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterLikeRepository;
 import com.example.bucketlist.repository.PosterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -43,6 +46,15 @@ public class PosterLikeService {
         posterLike.setMember(member);
         PosterLike save = posterLikeRepository.save(posterLike);
         return save.getId();
+    }
+
+    public PagedModel<PosterOverviewResponse> getLikePosters(Long memberId, int page, int size) {
+
+        if (size >= 50)
+            size = 10;
+
+        Page<PosterOverviewResponse> likePosterOverview = posterRepository.findLikePosterOverviewByMemberId(memberId, page, size);
+        return new PagedModel<>(likePosterOverview);
     }
 
 }

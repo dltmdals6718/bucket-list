@@ -332,4 +332,88 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
 
 
     }
+
+
+    @Override
+    public Page<PosterOverviewResponse> findLikePosterOverviewByMemberId(Long memberId, int page, int size) {
+        QPoster poster = QPoster.poster;
+        QMember member = QMember.member;
+        QProfileImage profileImage = QProfileImage.profileImage;
+        QPosterTag posterTag = QPosterTag.posterTag;
+        QTag tag = QTag.tag;
+        QPosterLike posterLike = QPosterLike.posterLike;
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        // 좋아요 개수 조회 서브쿼리
+        JPAQuery<Long> likeCountQuery = jpaQueryFactory
+                .select(posterLike.count())
+                .from(posterLike)
+                .where(posterLike.poster.id.eq(poster.id));
+
+        // 쿼리 빌드
+        JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
+                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve, likeCountQuery)
+                .from(posterLike)
+                .leftJoin(member).on(member.id.eq(poster.member.id))
+                .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
+                .leftJoin(poster).on(poster.id.eq(posterLike.poster.id))
+                .where(posterLike.member.id.eq(memberId))
+                .offset((page - 1) * size)
+                .limit(size)
+                .orderBy(posterLike.id.desc());
+
+        // 카운트 쿼리
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(posterLike.count())
+                .from(posterLike)
+                .leftJoin(member).on(member.id.eq(posterLike.member.id))
+                .where(member.id.eq(memberId));
+
+        List<PosterOverviewResponse> overviewResponses = tupleJPAQuery.fetch()
+                .stream()
+                .map(tuple -> {
+
+                    PosterOverviewResponse posterOverviewResponse = new PosterOverviewResponse();
+                    posterOverviewResponse.setMemberId(tuple.get(member.id));
+                    posterOverviewResponse.setNickname(tuple.get(member.nickname));
+                    posterOverviewResponse.setPosterId(tuple.get(poster.id));
+                    posterOverviewResponse.setTitle(tuple.get(poster.title));
+                    posterOverviewResponse.setContent(tuple.get(poster.pureContent));
+                    posterOverviewResponse.setIsAchieve(tuple.get(poster.isAchieve));
+                    posterOverviewResponse.setLikeCnt(tuple.get(likeCountQuery));
+
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));
+
+                    String profile = tuple.get(profileImage.storeFileName);
+                    String email = tuple.get(member.email);
+                    String provider = tuple.get(member.provider);
+                    String providerId = tuple.get(member.providerId);
+
+                    if (profile == null) {
+
+                        if (email == null)
+                            posterOverviewResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(provider + "_" + providerId));
+                        else
+                            posterOverviewResponse.setProfileImg(DefaultProfileImageUtil.getDefaultProfileImagePath(email));
+
+                    } else {
+                        posterOverviewResponse.setProfileImg(s3Uploader.getProfileImgPath(profile));
+                    }
+
+                    // 태그 목록 조회
+                    List<String> tagNamesList = jpaQueryFactory
+                            .select(tag.name)
+                            .from(posterTag)
+                            .join(posterTag.tag, tag)
+                            .where(posterTag.poster.id.eq(tuple.get(poster.id)))
+                            .fetch();
+                    posterOverviewResponse.setTags(tagNamesList);
+                    return posterOverviewResponse;
+                })
+                .collect(Collectors.toList());
+
+        return PageableExecutionUtils.getPage(overviewResponses, pageable, countQuery::fetchOne);
+    }
 }

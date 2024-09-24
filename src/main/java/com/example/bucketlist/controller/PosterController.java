@@ -214,6 +214,20 @@ public class PosterController {
         return ResponseEntity.ok(posterOverview);
     }
 
+    @GetMapping("/api/like-posters")
+    @ResponseBody
+    public ResponseEntity<PagedModel> getLikePosterOverview(@AuthenticationPrincipal CustomUserDetails member,
+                                                            @RequestParam(defaultValue = "1") Integer page,
+                                                            @RequestParam(defaultValue = "5") Integer size) {
+
+        if (member == null) // 비로그인
+            throw new UnauthenticationException(ErrorCode.UNAUTHENTICATION);
+
+        PagedModel<PosterOverviewResponse> posterOverview = posterLikeService.getLikePosters(member.getId(), page, size);
+
+        return ResponseEntity.ok(posterOverview);
+    }
+
     @PostMapping("/api/posters/{posterId}/like")
     @ResponseBody
     public ResponseEntity addPosterLike(@AuthenticationPrincipal CustomUserDetails member,
