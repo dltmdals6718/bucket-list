@@ -21,6 +21,21 @@ $(document).ready(function () {
         window.location.href = url.toString();
     });
 
+    // 최신순 정렬
+    $("#id-sort-btn").click(function () {
+        let url = new URL(window.location.href);
+        url.searchParams.set("sort", "id");
+        window.location.href = url.toString();
+    });
+
+    // 좋아요순 정렬
+    $("#like-sort-btn").click(function () {
+        let url = new URL(window.location.href);
+        url.searchParams.set("sort", "like");
+        window.location.href = url.toString();
+    });
+
+
 
     // 다음 페이지
     $("#next-page-btn").click(function () {
