@@ -4,14 +4,17 @@ import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.dto.request.MemberProfileUpdateRequest;
 import com.example.bucketlist.dto.request.MemberPwdUpdateRequest;
 import com.example.bucketlist.dto.response.MemberProfileResponse;
+import com.example.bucketlist.dto.response.PosterOverviewResponse;
 import com.example.bucketlist.service.MailService;
 import com.example.bucketlist.dto.request.MemberSigninRequest;
 import com.example.bucketlist.dto.request.MemberSignupRequest;
 import com.example.bucketlist.service.MemberService;
+import com.example.bucketlist.service.PosterService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -31,12 +34,14 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PosterService posterService;
     private final MailService mailService;
     private final MessageSource messageSource;
 
     @Autowired
-    public MemberController(MemberService memberService, MailService mailService, MessageSource messageSource) {
+    public MemberController(MemberService memberService, PosterService posterService, MailService mailService, MessageSource messageSource) {
         this.memberService = memberService;
+        this.posterService = posterService;
         this.mailService = mailService;
         this.messageSource = messageSource;
     }
@@ -88,8 +93,8 @@ public class MemberController {
     }
 
     @GetMapping("/profile")
-    public String getProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
-        MemberProfileResponse memberProfile = memberService.getMemberProfile(customUserDetails.getId());
+    public String getProfile(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        MemberProfileResponse memberProfile = memberService.getMemberProfile(member.getId());
         model.addAttribute("member", memberProfile);
         return "member/profile";
     }
@@ -152,6 +157,35 @@ public class MemberController {
         return ResponseEntity
                 .ok()
                 .build();
+    }
+
+    @GetMapping("/{memberId}/posters")
+    public String viewPosterProfileByMemberId(@PathVariable Long memberId,
+                                              @RequestParam(defaultValue = "1") int page,
+                                              Model model) {
+
+        MemberProfileResponse memberProfile = memberService.getMemberProfile(memberId);
+        model.addAttribute("memberProfile", memberProfile);
+
+        PagedModel<PosterOverviewResponse> posterOverview = posterService.findPosterOverviewByMemberId(memberId, page, 10, false);
+
+        PagedModel.PageMetadata metadata = posterOverview.getMetadata();
+        model.addAttribute("posters", posterOverview.getContent());
+
+        long currentPage = metadata.number() + 1;
+        long totalPage = Math.max(metadata.totalPages(), 1); // 전체 페이지 개수가 0인 경우를 방지
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPage", totalPage);
+
+        int blockPageSize = 10;
+        long currentPageBlock = (long) Math.ceil(currentPage / (double) blockPageSize);
+        long startPage = (currentPageBlock - 1) * blockPageSize + 1;
+        long endPage = Math.min(currentPageBlock * blockPageSize, totalPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
+        return "member/poster-profile";
     }
 
 }
