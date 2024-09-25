@@ -19,7 +19,7 @@
                 <li class="list-group-item" th:each="poster : ${allPosters}">
                     <div>
                         <img th:src="${poster.profileImg}" width="20" height="20">
-                        <a class="link-dark link-underline-opacity-0 m-0" href="#" th:utext="${poster.nickname}">닉네임</a>
+                        <a class="link-dark link-underline-opacity-0 m-0" th:href="@{/members/{memberId}/posters(memberId = ${poster.memberId})}" th:utext="${poster.nickname}">닉네임</a>
                         <span class="m-0 text-secondary" style="font-size: 10pt" th:utext="${poster.createdDate}">날짜</span>
                         <div>
                             <a class="link-dark link-underline-opacity-0" th:href="@{/posters/{id}(id=${poster.posterId})}" th:utext="${poster.title}">제목</a>

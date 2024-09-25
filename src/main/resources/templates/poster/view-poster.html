@@ -18,7 +18,7 @@
     <div class="d-flex align-items-center">
         <img th:src="${poster.profileImg}" alt="프로필 이미지" class="rounded-circle me-2" width="48px" height="48px">
         <div>
-            <p class="m-0" th:utext="${poster.nickname}">작성자 이름</p>
+            <a class="m-0 link-dark link-underline-opacity-0" th:utext="${poster.nickname}" th:href="@{/members/{memberId}/posters(memberId = ${poster.memberId})}">작성자 이름</a>
             <div class="d-flex align-items-center">
                 <p class="m-0 text-secondary" th:text="${poster.createdDate}" style="font-size: 10pt">날짜</p>
                 <div th:if="${poster.isAchieve == true}" class="d-flex align-items-center ms-2">
