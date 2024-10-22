@@ -35,6 +35,12 @@ $(document).ready(function () {
         window.location.href = url.toString();
     });
 
+    $("#comment-sort-btn").click(function () {
+        let url = new URL(window.location.href);
+        url.searchParams.set("sort", "comment");
+        window.location.href = url.toString();
+    });
+
 
 
     // 다음 페이지
