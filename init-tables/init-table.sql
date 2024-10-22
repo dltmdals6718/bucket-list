@@ -78,3 +78,12 @@ CREATE TABLE IF NOT EXISTS poster_like (
     FOREIGN KEY (member_id) REFERENCES member(id)
 );
 
+CREATE TABLE IF NOT EXISTS poster_comment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    poster_id BIGINT,
+    member_id BIGINT,
+    created_date DATETIME,
+    content VARCHAR(255),
+    FOREIGN KEY (poster_id) REFERENCES poster(id),
+    FOREIGN KEY (member_id) REFERENCES member(id)
+);

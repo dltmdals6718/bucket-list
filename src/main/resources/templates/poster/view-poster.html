@@ -9,6 +9,8 @@
     <th:block th:insert="~{fragments/commonHead ::commonHead}"></th:block>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css"/>
     <script src="/js/poster/view-poster.js"></script>
+    <script src="/js/poster/create-comment.js"></script>
+    <script src="/js/poster/view-comments.js"></script>
     <title>Title</title>
 </head>
 <body>
@@ -18,7 +20,8 @@
     <div class="d-flex align-items-center">
         <img th:src="${poster.profileImg}" alt="프로필 이미지" class="rounded-circle me-2" width="48px" height="48px">
         <div>
-            <a class="m-0 link-dark link-underline-opacity-0" th:utext="${poster.nickname}" th:href="@{/members/{memberId}/posters(memberId = ${poster.memberId})}">작성자 이름</a>
+            <a class="m-0 link-dark link-underline-opacity-0" th:utext="${poster.nickname}"
+               th:href="@{/members/{memberId}/posters(memberId = ${poster.memberId})}">작성자 이름</a>
             <div class="d-flex align-items-center">
                 <p class="m-0 text-secondary" th:text="${poster.createdDate}" style="font-size: 10pt">날짜</p>
                 <div th:if="${poster.isAchieve == true}" class="d-flex align-items-center ms-2">
@@ -65,6 +68,15 @@
         <div th:utext="${poster.posterAchieveContent}" class="ck-content">완료 내용</div>
         <hr>
     </div>
+    <hr>
+    <div class="border border-dark-subtle rounded">
+        <span style="font-size: 10pt;" th:utext="|${poster.commentCnt} Comments|">댓글 개수</span>
+        <textarea id="comment" th:data-poster-id="${posterId}"></textarea>
+        <button id="comment-write-btn" class="btn btn-light">댓글 쓰기</button>
+    </div>
+    <ul id="comments-overview" th:data-poster-id="${posterId}">
+    </ul>
+    <button id="more-comments-btn">더보기</button>
     <ul id="all-posters-overview" class="list-group list-group-flush" th:data-poster-id="${posterId}">
 
     </ul>

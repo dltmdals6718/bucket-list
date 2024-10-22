@@ -42,4 +42,7 @@ public class Poster {
     @OneToMany(mappedBy = "poster")
     private List<PosterLike> posterLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "poster")
+    private List<PosterComment> posterComments = new ArrayList<>();
+
 }

@@ -29,5 +29,16 @@ function escapeHtml(unsafe) {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/'/g, "&#x27;")
+        .replace(/\//g, "&#x2F;");
+}
+
+function unescapeHtml(encoded) {
+    return encoded
+        .replace(/&quot;/g, '"')
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&amp;/g, '&')
+        .replace(/&#x2F;/g, '/')
+        .replace(/&#x27;/g, '\'');
 }

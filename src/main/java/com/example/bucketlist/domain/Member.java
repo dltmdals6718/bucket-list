@@ -40,4 +40,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<PosterLike> posterLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member")
+    private List<PosterComment> posterComments = new ArrayList<>();
+
 }

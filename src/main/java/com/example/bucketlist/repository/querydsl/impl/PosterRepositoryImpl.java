@@ -50,6 +50,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         QTag tag = QTag.tag;
         QPosterAchieve posterAchieve = QPosterAchieve.posterAchieve;
         QPosterLike posterLike = QPosterLike.posterLike;
+        QPosterComment posterComment = QPosterComment.posterComment;
 
         List<String> tags = jpaQueryFactory
                 .select(tag.name)
@@ -63,6 +64,13 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                 .from(posterLike)
                 .where(posterLike.poster.id.eq(posterId))
                 .fetchOne();
+
+        Long commentCnt = jpaQueryFactory
+                .select(posterComment.count())
+                .from(posterComment)
+                .where(posterComment.poster.id.eq(posterId))
+                .fetchOne();
+
 
         PosterDetailsResponse posterDetailsResponse = jpaQueryFactory
                 .select(new QPosterDetailsResponse(
@@ -79,7 +87,8 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                         Expressions.constant(tags),
                         poster.isAchieve,
                         posterAchieve.content,
-                        Expressions.constant(likeCnt)
+                        Expressions.constant(likeCnt),
+                        Expressions.constant(commentCnt)
                 ))
                 .from(poster)
                 .join(member).on(member.id.eq(poster.member.id))
@@ -116,21 +125,30 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         QPosterTag posterTag = QPosterTag.posterTag;
         QTag tag = QTag.tag;
         QPosterLike posterLike = QPosterLike.posterLike;
+        QPosterComment posterComment = QPosterComment.posterComment;
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
+        // 좋아요 개수
         StringPath likeCount = Expressions.stringPath("like_count");
         JPAQuery<Long> likeCountQuery = jpaQueryFactory
                 .select(posterLike.count())
                 .from(posterLike)
                 .where(posterLike.poster.id.eq(poster.id));
 
+        // 댓글 개수
+        StringPath commentCount = Expressions.stringPath("comment_count");
+        JPAQuery<Long> commentCountQuery = jpaQueryFactory
+                .select(posterComment.count())
+                .from(posterComment)
+                .where(posterComment.poster.id.eq(poster.id));
 
         // 쿼리 빌드
         JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
                 .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate,
                         poster.isAchieve,
-                        ExpressionUtils.as(likeCountQuery, "like_count"))
+                        ExpressionUtils.as(likeCountQuery, "like_count"),
+                        ExpressionUtils.as(commentCountQuery, "comment_count"))
                 .from(poster)
                 .leftJoin(member).on(member.id.eq(poster.member.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
@@ -187,6 +205,8 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                 tupleJPAQuery.orderBy(poster.id.desc());
             } else if (sort.equals("like")) {
                 tupleJPAQuery.orderBy(likeCount.desc());
+            } else if (sort.equals("comment")) {
+                tupleJPAQuery.orderBy(commentCount.desc());
             }
         } else {
             tupleJPAQuery.orderBy(poster.id.desc());
@@ -204,6 +224,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                     posterOverviewResponse.setContent(tuple.get(poster.pureContent));
                     posterOverviewResponse.setIsAchieve(tuple.get(poster.isAchieve));
                     posterOverviewResponse.setLikeCnt(tuple.get(11, Long.class));
+                    posterOverviewResponse.setCommentCnt(tuple.get(12, Long.class));
 
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));
@@ -248,6 +269,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         QPosterTag posterTag = QPosterTag.posterTag;
         QTag tag = QTag.tag;
         QPosterLike posterLike = QPosterLike.posterLike;
+        QPosterComment posterComment = QPosterComment.posterComment;
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
@@ -257,9 +279,15 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                 .from(posterLike)
                 .where(posterLike.poster.id.eq(poster.id));
 
+        // 댓글 개수 서브쿼리
+        JPAQuery<Long> commentCountQuery = jpaQueryFactory
+                .select(posterComment.count())
+                .from(posterComment)
+                .where(posterComment.poster.id.eq(poster.id));
+
         // 쿼리 빌드
         JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
-                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve, likeCountQuery)
+                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve, likeCountQuery, commentCountQuery)
                 .from(poster)
                 .leftJoin(member).on(member.id.eq(poster.member.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
@@ -296,6 +324,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                     posterOverviewResponse.setContent(tuple.get(poster.pureContent));
                     posterOverviewResponse.setIsAchieve(tuple.get(poster.isAchieve));
                     posterOverviewResponse.setLikeCnt(tuple.get(likeCountQuery));
+                    posterOverviewResponse.setCommentCnt(tuple.get(commentCountQuery));
 
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));
@@ -342,6 +371,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
         QPosterTag posterTag = QPosterTag.posterTag;
         QTag tag = QTag.tag;
         QPosterLike posterLike = QPosterLike.posterLike;
+        QPosterComment posterComment = QPosterComment.posterComment;
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
@@ -351,9 +381,15 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                 .from(posterLike)
                 .where(posterLike.poster.id.eq(poster.id));
 
+        // 댓글 개수 서브쿼리
+        JPAQuery<Long> commentCountQuery = jpaQueryFactory
+                .select(posterComment.count())
+                .from(posterComment)
+                .where(posterComment.poster.id.eq(poster.id));
+
         // 쿼리 빌드
         JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
-                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve, likeCountQuery)
+                .select(poster.id, member.id, member.nickname, member.email, member.provider, member.providerId, profileImage.storeFileName, poster.title, poster.pureContent, poster.createdDate, poster.isAchieve, likeCountQuery, commentCountQuery)
                 .from(posterLike)
                 .leftJoin(member).on(member.id.eq(poster.member.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
@@ -382,6 +418,7 @@ public class PosterRepositoryImpl implements PosterRepositoryCustom {
                     posterOverviewResponse.setContent(tuple.get(poster.pureContent));
                     posterOverviewResponse.setIsAchieve(tuple.get(poster.isAchieve));
                     posterOverviewResponse.setLikeCnt(tuple.get(likeCountQuery));
+                    posterOverviewResponse.setCommentCnt(tuple.get(commentCountQuery));
 
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     posterOverviewResponse.setCreatedDate(tuple.get(poster.createdDate).format(dateTimeFormatter));

@@ -54,10 +54,13 @@ public class GlobalApiExceptionHandler {
     }
 
     @ExceptionHandler({UnauthenticationException.class})
-    public ResponseEntity<String> unauthenticationException(UnauthenticationException ex) {
+    public ResponseEntity<Map> unauthenticationException(UnauthenticationException ex) {
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put(ex.getErrorCode().name(), ex.getErrorCode().getMessage());
         return ResponseEntity
                 .status(ex.getErrorCode().getHttpStatus())
-                .body(ex.getErrorCode().getMessage());
+                .body(map);
     }
 
     @ExceptionHandler({DuplicatePosterLikeException.class})
