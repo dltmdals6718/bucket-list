@@ -1,10 +1,14 @@
 package com.example.bucketlist.service;
 
+import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.domain.Member;
 import com.example.bucketlist.domain.Poster;
 import com.example.bucketlist.domain.PosterComment;
+import com.example.bucketlist.dto.request.comment.PosterCommentUpdateRequest;
 import com.example.bucketlist.dto.request.comment.PosterCommentWriteRequest;
 import com.example.bucketlist.dto.response.comment.PosterCommentResponse;
+import com.example.bucketlist.exception.ErrorCode;
+import com.example.bucketlist.exception.UnauthenticationException;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterCommentRepository;
 import com.example.bucketlist.repository.PosterRepository;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PosterCommentService {
@@ -27,8 +32,8 @@ public class PosterCommentService {
         this.posterRepository = posterRepository;
     }
 
-    public PagedModel<PosterCommentResponse> getComments(Long posterId, int page, int size) {
-        Page<PosterCommentResponse> posterComments = posterCommentRepository.findPosterCommentsByPosterId(posterId, page, size);
+    public PagedModel<PosterCommentResponse> getComments(CustomUserDetails member, Long posterId, int page, int size) {
+        Page<PosterCommentResponse> posterComments = posterCommentRepository.findPosterCommentsByPosterId(member, posterId, page, size);
         return new PagedModel<>(posterComments);
     }
 
@@ -47,6 +52,37 @@ public class PosterCommentService {
         posterCommentRepository.save(posterComment);
 
         return posterComment.getId();
+    }
+
+    public void deleteComment(Long posterId, Long commentId, Long memberId) {
+
+        PosterComment posterComment = posterCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        if (!posterComment.getPoster().getId().equals(posterId))
+            throw new IllegalArgumentException("댓글의 게시글 미일치");
+
+        if (!posterComment.getMember().getId().equals(memberId))
+            throw new UnauthenticationException(ErrorCode.UNAUTHENTICATION);
+
+        posterCommentRepository.delete(posterComment);
+    }
+
+    @Transactional
+    public void updateComment(Long posterId, Long commentId, Long memberId, PosterCommentUpdateRequest commentUpdateRequest) {
+
+        PosterComment posterComment = posterCommentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        if (!posterComment.getPoster().getId().equals(posterId))
+            throw new IllegalArgumentException("댓글의 게시글 미일치");
+
+        if (!posterComment.getMember().getId().equals(memberId))
+            throw new UnauthenticationException(ErrorCode.UNAUTHENTICATION);
+
+        String content = commentUpdateRequest.getContent();
+        posterComment.setContent(content);
+
     }
 
 

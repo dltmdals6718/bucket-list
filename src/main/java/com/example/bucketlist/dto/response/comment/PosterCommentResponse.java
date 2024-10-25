@@ -13,5 +13,6 @@ public class PosterCommentResponse {
     private Long commentId;
     private String createdDate;
     private String content;
+    private Boolean isOwner;
 
 }

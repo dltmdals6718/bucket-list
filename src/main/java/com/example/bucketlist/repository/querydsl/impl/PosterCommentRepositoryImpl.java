@@ -1,5 +1,6 @@
 package com.example.bucketlist.repository.querydsl.impl;
 
+import com.example.bucketlist.config.security.CustomUserDetails;
 import com.example.bucketlist.domain.QMember;
 import com.example.bucketlist.domain.QPoster;
 import com.example.bucketlist.domain.QPosterComment;
@@ -41,7 +42,7 @@ public class PosterCommentRepositoryImpl implements PosterCommentRepositoryCusto
     }
 
     @Override
-    public Page<PosterCommentResponse> findPosterCommentsByPosterId(Long posterId, int page, int size) {
+    public Page<PosterCommentResponse> findPosterCommentsByPosterId(CustomUserDetails loginMember, Long posterId, int page, int size) {
 
         QPosterComment posterComment = QPosterComment.posterComment;
         QPoster poster = QPoster.poster;
@@ -80,6 +81,16 @@ public class PosterCommentRepositoryImpl implements PosterCommentRepositoryCusto
                     posterCommentResponse.setMemberId(tuple.get(member.id));
                     posterCommentResponse.setNickname(tuple.get(member.nickname));
                     posterCommentResponse.setContent(tuple.get(posterComment.content));
+
+                    if (loginMember == null) {
+                        posterCommentResponse.setIsOwner(false);
+                    } else {
+                        if (tuple.get(member.id).equals(loginMember.getId())) {
+                            posterCommentResponse.setIsOwner(true);
+                        } else {
+                            posterCommentResponse.setIsOwner(false);
+                        }
+                    }
 
                     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     posterCommentResponse.setCreatedDate(tuple.get(posterComment.createdDate).format(dateTimeFormatter));
