@@ -35,7 +35,7 @@ function loadComments(posterId, commentPage) {
                     .attr("href", "/members/" + comment.memberId + "/posters");
 
                 const content = $("<div class='comment-content'></div>")
-                    .text(unescapeHtml(comment.content));
+                    .html(unescapeHtml(comment.content));
 
                 const commentElement = $("<li></li>")
                     .append(content)

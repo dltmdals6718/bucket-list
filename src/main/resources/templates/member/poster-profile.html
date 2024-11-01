@@ -20,6 +20,9 @@
         </div>
         <div class="col-lg-10">
             <ul class="list-group list-group-flush">
+                <li th:if="${posters.isEmpty()}" class="list-group-item text-center text-secondary">
+                    작성한 버킷리스트가 없습니다.
+                </li>
                 <li class="list-group-item" th:each="poster : ${posters}">
                     <div>
                         <div>
@@ -28,7 +31,7 @@
                                     <img class="rounded-circle" th:src="${poster.profileImg}" width="20" height="20">
                                 </div>
                                 <div class="text-truncate align-self-center" style="font-size: 10pt;">
-                                    <a class="link-dark link-underline-opacity-0 m-0" href="#"
+                                    <a class="link-dark link-underline-opacity-0 m-0" th:href="|/members/${poster.memberId}/posters|"
                                        th:utext="${poster.nickname}"></a>
                                 </div>
                             </div>
@@ -83,7 +86,7 @@
                     </div>
                 </li>
             </ul>
-            <div class="d-flex justify-content-between">
+            <div th:unless="${posters.isEmpty()}" class="d-flex justify-content-between">
                 <button id="prev-page-btn" class="btn border-0" th:classappend="${currentPage <= 1} ? disabled : ''">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-arrow-left"

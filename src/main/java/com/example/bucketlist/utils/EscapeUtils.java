@@ -15,6 +15,7 @@ public class EscapeUtils {
         escapeMap.put('"', "&quot;");
         escapeMap.put('\'', "&#x27;");
         escapeMap.put('/', "&#x2F;");
+        escapeMap.put('\n', "<br>");
 
         unescapeMap.put("&lt;", '<');
         unescapeMap.put("&gt;", '>');

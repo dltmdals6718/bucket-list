@@ -12,6 +12,7 @@ import com.example.bucketlist.exception.UnauthenticationException;
 import com.example.bucketlist.repository.MemberRepository;
 import com.example.bucketlist.repository.PosterCommentRepository;
 import com.example.bucketlist.repository.PosterRepository;
+import com.example.bucketlist.utils.EscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedModel;
@@ -48,7 +49,10 @@ public class PosterCommentService {
         PosterComment posterComment = new PosterComment();
         posterComment.setPoster(poster);
         posterComment.setMember(member);
-        posterComment.setContent(commentWriteRequest.getContent());
+
+        String escapedContent = EscapeUtils.escapeHtml(commentWriteRequest.getContent());
+        posterComment.setContent(escapedContent);
+
         posterCommentRepository.save(posterComment);
 
         return posterComment.getId();
