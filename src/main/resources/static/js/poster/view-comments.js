@@ -32,14 +32,35 @@ function loadComments(posterId, commentPage) {
                 
                 const name = $("<a></a>")
                     .text(unescapeHtml(comment.nickname))
-                    .attr("href", "/members/" + comment.memberId + "/posters");
+                    .attr("href", "/members/" + comment.memberId + "/posters")
+                    .attr("class", "link-dark link-underline-opacity-0");
+
+                const date = $("<p></p>")
+                    .attr("class", "text-secondary")
+                    .text(comment.createdDate);
+
+                const profileImg = $("<img>")
+                    .attr("src", comment.profileImg)
+                    .attr("class", "rounded-circle me-2")
+                    .attr("width", "48px")
+                    .attr("height", "48px");
+
+                const profileDetails = $("<div></div>")
+                    .append(name)
+                    .append(date);
+
+                const profile = $("<div></div>")
+                    .attr("class", "d-flex")
+                    .append(profileImg)
+                    .append(profileDetails);
 
                 const content = $("<div class='comment-content'></div>")
                     .html(unescapeHtml(comment.content));
 
                 const commentElement = $("<li></li>")
-                    .append(content)
-                    .append(name);
+                    .attr("class", "list-group-item px-0")
+                    .append(profile)
+                    .append(content);
 
                 const deleteBtn = $("<a></a>")
                     .text("삭제")
