@@ -45,13 +45,22 @@ function loadComments(posterId, commentPage) {
                     .attr("width", "48px")
                     .attr("height", "48px");
 
+                const profileImgLink = $("<a></a>")
+                    .attr("href", "/members/" + comment.memberId + "/posters")
+                    .css({
+                        width: "48px",
+                        height: "48px",
+                        marginRight: "8px"
+                    })
+                    .append(profileImg);
+
                 const profileDetails = $("<div></div>")
                     .append(name)
                     .append(date);
 
                 const profile = $("<div></div>")
                     .attr("class", "d-flex")
-                    .append(profileImg)
+                    .append(profileImgLink)
                     .append(profileDetails);
 
                 const content = $("<div class='comment-content'></div>")
