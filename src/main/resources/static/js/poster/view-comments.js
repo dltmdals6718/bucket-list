@@ -35,6 +35,9 @@ function loadComments(posterId, commentPage) {
                     .attr("href", "/members/" + comment.memberId + "/posters")
                     .attr("class", "link-dark link-underline-opacity-0");
 
+                const nameDiv = $("<div></div>")
+                    .append(name);
+
                 const date = $("<p></p>")
                     .attr("class", "text-secondary")
                     .text(comment.createdDate);
@@ -44,6 +47,10 @@ function loadComments(posterId, commentPage) {
                     .attr("class", "rounded-circle me-2")
                     .attr("width", "48px")
                     .attr("height", "48px");
+
+                const subProfileDetails = $("<div></div>")
+                    .attr("class", "d-flex")
+                    .append(date);
 
                 const profileImgLink = $("<a></a>")
                     .attr("href", "/members/" + comment.memberId + "/posters")
@@ -55,8 +62,8 @@ function loadComments(posterId, commentPage) {
                     .append(profileImg);
 
                 const profileDetails = $("<div></div>")
-                    .append(name)
-                    .append(date);
+                    .append(nameDiv)
+                    .append(subProfileDetails);
 
                 const profile = $("<div></div>")
                     .attr("class", "d-flex")
@@ -74,6 +81,7 @@ function loadComments(posterId, commentPage) {
                 const deleteBtn = $("<a></a>")
                     .text("삭제")
                     .attr("href", "#")
+                    .attr("class", "ms-1 link-primary link-underline-opacity-0")
                     .on("click", function (e) {
                         e.preventDefault();
 
@@ -103,22 +111,22 @@ function loadComments(posterId, commentPage) {
                 const updateBtn = $("<a></a>")
                     .text("수정")
                     .attr("href", "#")
+                    .attr("class", "ms-2 link-primary link-underline-opacity-0")
                     .on("click", function (e) {
                         e.preventDefault();
 
-                        const contentDiv = $(this).siblings("div[class='comment-content']");
-                        contentDiv.remove();
-
                         const commentForm = $('<textarea id="comment-update-form"></textarea>')
-                            .text(contentDiv.text());
+                            .text(content.html().replaceAll("<br>", "\n"));
+
+                        content.remove();
 
                         const updateConfirm = $('<button></button>')
                             .addClass('btn btn-light')
                             .text('댓글 수정');
 
-                        $(this).parent()
-                            .prepend(updateConfirm)
-                            .prepend(commentForm);
+                        commentElement
+                            .append(commentForm)
+                            .append(updateConfirm);
 
                         updateConfirm
                             .click(function () {
@@ -127,7 +135,7 @@ function loadComments(posterId, commentPage) {
 
                                 const csrfToken = $('meta[name="_csrf"]').attr("content");
                                 const csrfHeader = $('meta[name="_csrf_header"]').attr("content");
-                                const commentUpdateContent = $(this).siblings($("#comment-update-form")).val();
+                                const commentUpdateContent = commentForm.val();
 
                                 $.ajax("/api/posters/" + comment.posterId + "/comments/" + comment.commentId, {
                                     type: "PUT",
@@ -156,8 +164,8 @@ function loadComments(posterId, commentPage) {
 
 
                 if (comment.isOwner) {
-                    commentElement.append(updateBtn);
-                    commentElement.append(deleteBtn);
+                    subProfileDetails.append(updateBtn);
+                    subProfileDetails.append(deleteBtn);
                 }
 
                 $("#comments-overview").append(commentElement);

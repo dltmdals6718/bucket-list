@@ -84,8 +84,8 @@ public class PosterCommentService {
         if (!posterComment.getMember().getId().equals(memberId))
             throw new UnauthenticationException(ErrorCode.UNAUTHENTICATION);
 
-        String content = commentUpdateRequest.getContent();
-        posterComment.setContent(content);
+        String escapedContent = EscapeUtils.escapeHtml(commentUpdateRequest.getContent());
+        posterComment.setContent(escapedContent);
 
     }
 
