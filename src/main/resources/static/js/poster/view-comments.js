@@ -91,8 +91,6 @@ function loadComments(posterId, commentPage) {
                         const csrfToken = $('meta[name="_csrf"]').attr("content");
                         const csrfHeader = $('meta[name="_csrf_header"]').attr("content");
 
-
-
                         $.ajax("/api/posters/" + comment.posterId + "/comments/" + comment.commentId, {
                             type: "DELETE",
                             beforeSend: function (xhr) {
@@ -108,6 +106,8 @@ function loadComments(posterId, commentPage) {
                         })
                     });
 
+                let editFormFlag = false;
+
                 const updateBtn = $("<a></a>")
                     .text("수정")
                     .attr("href", "#")
@@ -115,18 +115,40 @@ function loadComments(posterId, commentPage) {
                     .on("click", function (e) {
                         e.preventDefault();
 
+                        if (editFormFlag)
+                            return;
+
+                        editFormFlag = true;
+
                         const commentForm = $('<textarea id="comment-update-form"></textarea>')
-                            .text(content.html().replaceAll("<br>", "\n"));
+                            .addClass("w-100")
+                            .text(unescapeHtml(content.html().replaceAll("<br>", "\n")));
 
                         content.remove();
 
                         const updateConfirm = $('<button></button>')
-                            .addClass('btn btn-light')
+                            .addClass('btn btn-light flex-grow-1')
                             .text('댓글 수정');
+
+                        const updateCancel = $('<button></button>')
+                            .addClass('btn btn-light')
+                            .text('취소')
+                            .click(function () {
+                                commentForm.remove();
+                                updateConfirm.remove();
+                                updateCancel.remove();
+                                commentElement.append(content);
+                                editFormFlag = false;
+                            });
+
+                        const updateDiv = $("<div></div>")
+                            .attr("class", "d-flex")
+                            .append(updateConfirm)
+                            .append(updateCancel);
 
                         commentElement
                             .append(commentForm)
-                            .append(updateConfirm);
+                            .append(updateDiv);
 
                         updateConfirm
                             .click(function () {
@@ -161,7 +183,6 @@ function loadComments(posterId, commentPage) {
                                 })
                             });
                     });
-
 
                 if (comment.isOwner) {
                     subProfileDetails.append(updateBtn);
