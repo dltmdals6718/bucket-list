@@ -70,6 +70,15 @@ public class GlobalApiExceptionHandler {
                 .body(ex.getErrorCode().getMessage());
     }
 
+    @ExceptionHandler({DuplicatePosterCommentLikeException.class})
+    public ResponseEntity<Map> duplicatePosterCommentLikeException(DuplicatePosterCommentLikeException ex) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put(ex.getErrorCode().name(), ex.getMessage());
+        return ResponseEntity
+                .status(ex.getErrorCode().getHttpStatus())
+                .body(response);
+    }
+
 
 
 
