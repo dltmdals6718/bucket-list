@@ -1,10 +1,7 @@
 package com.example.bucketlist.repository.querydsl.impl;
 
 import com.example.bucketlist.config.security.CustomUserDetails;
-import com.example.bucketlist.domain.QMember;
-import com.example.bucketlist.domain.QPoster;
-import com.example.bucketlist.domain.QPosterComment;
-import com.example.bucketlist.domain.QProfileImage;
+import com.example.bucketlist.domain.*;
 import com.example.bucketlist.dto.response.comment.PosterCommentResponse;
 import com.example.bucketlist.repository.querydsl.PosterCommentRepositoryCustom;
 import com.example.bucketlist.utils.DefaultProfileImageUtil;
@@ -45,6 +42,7 @@ public class PosterCommentRepositoryImpl implements PosterCommentRepositoryCusto
     public Page<PosterCommentResponse> findPosterCommentsByPosterId(CustomUserDetails loginMember, Long posterId, int page, int size) {
 
         QPosterComment posterComment = QPosterComment.posterComment;
+        QPosterCommentLike posterCommentLike = QPosterCommentLike.posterCommentLike;
         QPoster poster = QPoster.poster;
         QMember member = QMember.member;
         QProfileImage profileImage = QProfileImage.profileImage;
@@ -54,12 +52,29 @@ public class PosterCommentRepositoryImpl implements PosterCommentRepositoryCusto
 
         // 쿼리 빌드
         JPAQuery<Tuple> tupleJPAQuery = jpaQueryFactory
-                .select(poster.id, member.id, member.nickname, member.email, profileImage.storeFileName, posterComment.id, posterComment.createdDate, posterComment.content)
+                .select(poster.id,
+                        member.id,
+                        member.nickname,
+                        member.email,
+                        profileImage.storeFileName,
+                        posterComment.id,
+                        posterComment.createdDate,
+                        posterComment.content,
+                        posterCommentLike.count())
                 .from(poster)
                 .innerJoin(posterComment).on(posterComment.poster.id.eq(poster.id))
+                .leftJoin(posterCommentLike).on(posterCommentLike.posterComment.id.eq(posterComment.id))
                 .leftJoin(member).on(member.id.eq(posterComment.member.id))
                 .leftJoin(profileImage).on(profileImage.member.id.eq(member.id))
                 .where(poster.id.eq(posterId))
+                .groupBy(poster.id,
+                        member.id,
+                        member.nickname,
+                        member.email,
+                        profileImage.storeFileName,
+                        posterComment.id,
+                        posterComment.createdDate,
+                        posterComment.content)
                 .offset((page - 1) * size)
                 .limit(size)
                 .orderBy(posterComment.id.desc());
@@ -81,6 +96,7 @@ public class PosterCommentRepositoryImpl implements PosterCommentRepositoryCusto
                     posterCommentResponse.setMemberId(tuple.get(member.id));
                     posterCommentResponse.setNickname(tuple.get(member.nickname));
                     posterCommentResponse.setContent(tuple.get(posterComment.content));
+                    posterCommentResponse.setLikeCnt(tuple.get(posterCommentLike.count()));
 
                     if (loginMember == null) {
                         posterCommentResponse.setIsOwner(false);

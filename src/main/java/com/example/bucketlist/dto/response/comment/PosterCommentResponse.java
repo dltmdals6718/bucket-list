@@ -14,5 +14,6 @@ public class PosterCommentResponse {
     private String createdDate;
     private String content;
     private Boolean isOwner;
+    private Long likeCnt;
 
 }
