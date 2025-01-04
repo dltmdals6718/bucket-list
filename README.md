@@ -1,6 +1,34 @@
 # bucket-list
 버킷리스트 프로젝트
 
+##### Tech stack
+- ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazonwebservices&logoColor=white)
+![AmazonS3](https://img.shields.io/badge/amazon%20s3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![Intellij](https://img.shields.io/badge/intellij-000000.svg?style=for-the-badge&logo=intellijidea&logoColor=white)
+![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=openjdk&logoColor=white)
+![Gradle](https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white)
+
+- ![HTML](https://img.shields.io/badge/HTML-4479A1?style=for-the-badge&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-4479A1?style=for-the-badge&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-4479A1?style=for-the-badge&logoColor=white)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-4479A1?style=for-the-badge&logoColor=white)
+![BootStrap](https://img.shields.io/badge/BootStrap-4479A1?style=for-the-badge&logoColor=white)
+
+- ![SpringBoot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![Spring Data Jpa](https://img.shields.io/badge/Spring%20Data%20Jpa-6DB33F?style=for-the-badge&logoColor=white)
+![SpringSecurity](https://img.shields.io/badge/spring%20security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![QueryDSL](https://img.shields.io/badge/QueryDSL-4479A1?style=for-the-badge&logoColor=white)
+
+- ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
+
+- ![JUnit](https://img.shields.io/badge/Junit-25A162.svg?style=for-the-badge&logo=junit5&logoColor=white)
+![Assertj](https://img.shields.io/badge/AssertJ-4479A1?style=for-the-badge)
+![Mockito](https://img.shields.io/badge/Mockito-569A31?style=for-the-badge)
+
+
 ### 1.메인 페이지 <br>
 <img width="1440" alt="스크린샷 2025-01-04 오후 10 20 34" src="https://github.com/user-attachments/assets/7e3fc8ad-9df8-4023-bef4-bddacc3903b6" /> <br>
 <img width="322" alt="스크린샷 2025-01-04 오후 10 29 54" src="https://github.com/user-attachments/assets/f648dde9-bfef-4425-865a-b92e9999a159" /> <br>
