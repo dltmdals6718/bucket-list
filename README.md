@@ -1,5 +1,25 @@
 #   Bucket List Project
 
+##### 주요 수행 내용
+ - 버킷리스트 게시글, 댓글, 좋아요 CRUD 기능</br>
+ - 카카오, 네이버, 구글 소셜 로그인 연동</br>
+ - 회원가입시 이메일 인증 과정 개발</br>
+ - 반응형 웹 사이트 구현</br>
+ - 게시글 태그 생성 및 태그 검색</br>
+ - 작성일, 좋아요, 댓글 많은 순 정렬 기능</br>
+ - 작성한 버킷리스트, 좋아요 누른 버킷리스트 조회</br>
+ - 회원 정보 변경 페이지(프로필 사진, 비밀번호 변경) </br>
+ - 태그 삽입 방지(XSS 공격 방지) </br>
+
+
+
+##### 주요 성과
+ - HTML, CSS, JavaScript 활용한 웹 개발 </br>
+ - Ajax로 동적 웹 페이지 개발 </br>
+ - 반응형 웹 개발 경험 </br>
+ - 소셜 로그인 연동을 통한 OAuth 프로토콜 이해 </br>
+
+
 ##### Tech stack
 - ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazonwebservices&logoColor=white)
 ![AmazonS3](https://img.shields.io/badge/amazon%20s3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
